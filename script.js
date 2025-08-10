@@ -471,9 +471,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // ===== Enhanced Image Loading =====
     function preloadImages() {
         const criticalImages = [
-            'images/full_logo (1).png',
-            'images/i14.png',
-            'images/circle_dark_icon.png'
+            'full_logo (1).png',
+            'i14.png',
+            'circle_dark_icon.png'
         ];
         
         criticalImages.forEach(src => {

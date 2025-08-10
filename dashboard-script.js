@@ -7,26 +7,26 @@ let siteData = {
     desc1: "نقدّم حلولاً ذكية تسرّع إدارة أعمالك وتزيد من دقتها وكفاءتها.",
     desc2: "اختر كرمل+ لتجربة احترافية تسهّل عليك كل خطوة نحو المستقبل.",
     button: "تواصل معنا",
-    image: "../images/i14.png"
+    image: "../i14.png"
   },
   about: {
     title: "كرمل: حلول برمجية ذكية بثقة واحتراف",
     description: "نحن في كرمل فريق متخصص في تطوير البرمجيات وتصميم الحلول الرقمية الذكية التي تواكب متطلبات السوق وتواجه التحديات بثقة. نضم مطورين، مصممين، ومهندسي برمجيات يعملون بشغف واحد: تحويل الأفكار إلى حلول تقنية فعّالة. نبدأ بتحليل دقيق لاحتياجات العميل، وننفذ بعناية واحتراف، مع التزام كامل في كل مرحلة من مراحل المشروع — من التخطيط إلى الإطلاق وما بعده. نحرص على أن تكون تجربة التعاون معنا سلسة، مهنية، ومبنية على نتائج حقيقية وثقة تدوم."
   },
   partners: [
-    { name: "019", type: "شركة اتصالات", image: "../images/i1.png" },
-    { name: "Hallo 015", type: "شركة اتصالات", image: "../images/i2.png" },
-    { name: "Tranzilla", type: "بوابة دفع", image: "../images/i3.png" },
-    { name: "freeRadius", type: "سيرفر راديوس", image: "../images/i4.png" },
-    { name: "ريووحيت online", type: "برنامج محاسبة", image: "../images/i5.png" },
-    { name: "Priority", type: "برنامج ERP", image: "../images/i6.png" },
-    { name: "Golan", type: "شركة اتصالات", image: "../images/i7.png" },
-    { name: "Cellcom", type: "شركة اتصالات", image: "../images/i8.png" },
-    { name: "We4g", type: "شركة اتصالات", image: "../images/i9.png" },
-    { name: "Pelephone", type: "شركة اتصالات", image: "../images/i10.png" },
-    { name: "Partner", type: "شركة اتصالات", image: "../images/i11.png" },
-    { name: "Hot", type: "شركة اتصالات", image: "../images/i12.png" },
-    { name: "OpenOLT", type: "واجهة OLT", image: "../images/i13.png" }
+    { name: "019", type: "شركة اتصالات", image: "../i1.png" },
+    { name: "Hallo 015", type: "شركة اتصالات", image: "../i2.png" },
+    { name: "Tranzilla", type: "بوابة دفع", image: "../i3.png" },
+    { name: "freeRadius", type: "سيرفر راديوس", image: "../i4.png" },
+    { name: "ريووحيت online", type: "برنامج محاسبة", image: "../i5.png" },
+    { name: "Priority", type: "برنامج ERP", image: "../i6.png" },
+    { name: "Golan", type: "شركة اتصالات", image: "../i7.png" },
+    { name: "Cellcom", type: "شركة اتصالات", image: "../i8.png" },
+    { name: "We4g", type: "شركة اتصالات", image: "../i9.png" },
+    { name: "Pelephone", type: "شركة اتصالات", image: "../i10.png" },
+    { name: "Partner", type: "شركة اتصالات", image: "../i11.png" },
+    { name: "Hot", type: "شركة اتصالات", image: "../i12.png" },
+    { name: "OpenOLT", type: "واجهة OLT", image: "../i13.png" }
   ],
   vision: {
     mission: { text: "نبتكر حلولاً تقنية تصنع الفرق ونرافقك في كل خطوة من الفكرة حتى الإنجاز.", icon: "🎯" },
@@ -39,6 +39,138 @@ let siteData = {
     { name: "استشارة تقنية", icon: "💡" },
     { name: "تكامل الأنظمة", icon: "🔗" },
     { name: "تدريب الموظفين", icon: "🎓" }
+  ],
+  faq: [
+    {
+      question: "ما هي الخدمات التي تقدمونها؟",
+      answer: "نقدم مجموعة شاملة من الخدمات التقنية تشمل تطوير البرمجيات، تطوير المواقع والتطبيقات، تصميم واجهات المستخدم، تكامل الأنظمة، والدعم الفني.",
+      category: "general"
+    },
+    {
+      question: "كم تستغرق مدة تنفيذ المشروع؟",
+      answer: "تختلف مدة التنفيذ حسب حجم وتعقيد المشروع. المشاريع الصغيرة تستغرق 2-4 أسابيع، والمشاريع المتوسطة 1-3 أشهر، والمشاريع الكبيرة 3-6 أشهر.",
+      category: "pricing"
+    },
+    {
+      question: "هل تقدمون دعم فني بعد تسليم المشروع؟",
+      answer: "نعم، نقدم دعم فني مجاني لمدة 3 أشهر بعد تسليم المشروع، بالإضافة إلى عقود دعم فني مستمرة حسب احتياجات العميل.",
+      category: "support"
+    },
+    {
+      question: "ما هي التقنيات التي تستخدمونها؟",
+      answer: "نستخدم أحدث التقنيات مثل React، Node.js، Python، PHP، Laravel، WordPress، وأدوات التطوير الحديثة الأخرى.",
+      category: "technical"
+    },
+    {
+      question: "هل يمكنني تعديل المشروع بعد تسليمه؟",
+      answer: "نعم، يمكن تعديل المشروع بعد التسليم. نقدم خدمات الصيانة والتطوير المستمر حسب متطلبات العميل.",
+      category: "support"
+    },
+    {
+      question: "ما هي سياسة الدفع؟",
+      answer: "نطبق سياسة دفع مرنة: 50% مقدم عند بدء المشروع، و50% عند التسليم النهائي. للمشاريع الكبيرة يمكن تقسيم الدفع على مراحل.",
+      category: "pricing"
+    },
+    {
+      question: "هل تقدمون خدمات الاستضافة؟",
+      answer: "نعم، نقدم خدمات الاستضافة وإدارة الخوادم، بالإضافة إلى خدمات النسخ الاحتياطي والمراقبة المستمرة.",
+      category: "technical"
+    },
+    {
+      question: "كيف يمكنني التواصل معكم؟",
+      answer: "يمكنك التواصل معنا عبر الهاتف: +972 58-630-0009، أو البريد الإلكتروني: support@karmelplus.com، أو زيارة مكتبنا في شعفاط، القدس.",
+      category: "general"
+    }
+  ],
+  futureTech: [
+    {
+      name: "الذكاء الاصطناعي",
+      description: "نطور حلول ذكية تستخدم تقنيات الذكاء الاصطناعي والتعلم الآلي لتحسين كفاءة الأعمال واتخاذ القرارات الذكية.",
+      icon: "🤖",
+      image: "../ai-tech.jpg"
+    },
+    {
+      name: "إنترنت الأشياء",
+      description: "نربط الأجهزة والأنظمة لإنشاء شبكة ذكية تتيح المراقبة والتحكم عن بُعد وتحسين العمليات.",
+      icon: "🌐",
+      image: "../iot-tech.jpg"
+    },
+    {
+      name: "الحوسبة السحابية",
+      description: "نقدم حلول سحابية متقدمة تضمن المرونة والأمان والتوسع حسب احتياجات العمل.",
+      icon: "☁️",
+      image: "../cloud-tech.jpg"
+    },
+    {
+      name: "البلوك تشين",
+      description: "نطور تطبيقات بلوك تشين آمنة وموثوقة للمعاملات الرقمية والعقود الذكية.",
+      icon: "⛓️",
+      image: "../blockchain-tech.jpg"
+    }
+  ],
+  blog: [
+    {
+      title: "مستقبل التطوير الرقمي في 2024",
+      excerpt: "اكتشف أحدث الاتجاهات والتقنيات التي ستشكل مستقبل التطوير الرقمي في العام القادم.",
+      content: "مع دخولنا عام 2024، نشهد تطورات تقنية متسارعة تشكل مستقبل التطوير الرقمي...",
+      category: "technology",
+      image: "../blog-1.jpg",
+      date: "2024-01-15"
+    },
+    {
+      title: "كيفية اختيار التقنيات المناسبة لمشروعك",
+      excerpt: "دليل شامل لاختيار التقنيات والأدوات المناسبة لمشروعك التقني.",
+      content: "اختيار التقنيات المناسبة هو أحد أهم القرارات التي تؤثر على نجاح مشروعك التقني...",
+      category: "development",
+      image: "../blog-2.jpg",
+      date: "2024-01-10"
+    },
+    {
+      title: "أهمية تجربة المستخدم في التطبيقات الحديثة",
+      excerpt: "لماذا تعتبر تجربة المستخدم عاملاً حاسماً في نجاح التطبيقات والمواقع الإلكترونية.",
+      content: "في عالم التطبيقات والمواقع الإلكترونية، تعتبر تجربة المستخدم (UX) عاملاً حاسماً...",
+      category: "development",
+      image: "../blog-3.jpg",
+      date: "2024-01-05"
+    },
+    {
+      title: "أفضل الممارسات في أمان التطبيقات",
+      excerpt: "تعرف على أهم الممارسات والإجراءات لضمان أمان تطبيقاتك وبياناتك.",
+      content: "مع تزايد التهديدات الأمنية، أصبح أمان التطبيقات أولوية قصوى...",
+      category: "technology",
+      image: "../blog-4.jpg",
+      date: "2023-12-28"
+    },
+    {
+      title: "كيفية بناء فريق تطوير ناجح",
+      excerpt: "نصائح وإرشادات لبناء وإدارة فريق تطوير محترف وفعال.",
+      content: "بناء فريق تطوير ناجح يتطلب أكثر من مجرد توظيف مطورين موهوبين...",
+      category: "business",
+      image: "../blog-5.jpg",
+      date: "2023-12-20"
+    },
+    {
+      title: "التكامل بين الأنظمة: التحديات والحلول",
+      excerpt: "اكتشف التحديات والحلول في مجال تكامل الأنظمة والتطبيقات المختلفة.",
+      content: "تكامل الأنظمة هو عملية ربط الأنظمة والتطبيقات المختلفة لتعمل معاً...",
+      category: "technology",
+      image: "../blog-6.jpg",
+      date: "2023-12-15"
+    }
+  ],
+  feedback: [
+    {
+      name: "أحمد محمد",
+      company: "شركة التقنية المتقدمة",
+      text: "تعاملت مع فريق كرمل+ في مشروع تطوير موقع إلكتروني متقدم. النتيجة كانت مذهلة! الفريق محترف ومتعاون، والمشروع تم تسليمه في الوقت المحدد وبأعلى جودة.",
+      image: "../client-1.jpg"
+    },
+    {
+      name: "سارة أحمد",
+      company: "مؤسسة الإبداع الرقمي",
+      text: "كرمل+ هي الشريك التقني المثالي لأي مشروع. خبرتهم الواسعة وفهمهم العميق لاحتياجات العملاء يجعل التعامل معهم تجربة ممتعة ومثمرة.",
+      image: "../client-2.jpg"
+    }
   ],
   contact: {
     phone: "+972 58-630-0009",
@@ -111,22 +243,35 @@ function checkAuth() {
   console.log('checkAuth تم استدعاؤها');
   const isLoggedIn = sessionStorage.getItem('adminLoggedIn');
   if (isLoggedIn !== 'true') {
-    console.log('المستخدم غير مسجل دخول، إعادة توجيه إلى صفحة تسجيل الدخول');
-    window.location.href = 'login.html';
+    console.log('المستخدم غير مسجل دخول');
+    return false;
   } else {
     console.log('المستخدم مسجل دخول بنجاح');
+    return true;
   }
 }
 
 // تحميل البيانات عند بدء التطبيق
 function initializeDashboard() {
   console.log('initializeDashboard تم استدعاؤها');
-  checkAuth();
+  if (!checkAuth()) {
+    window.location.href = 'login.html';
+    return;
+  }
+  
   loadSiteData();
-  updateStats();
   loadPartners();
   loadServices();
+  loadFAQ();
+  loadFutureTech();
+  loadBlog();
+  loadFeedback();
+  loadWhyKarmelData();
+  loadPoliciesData();
+  updateStats();
   setupEventListeners();
+  
+  showSection('overview');
   console.log('تم تهيئة الداشبورد بنجاح');
 }
 
@@ -141,29 +286,41 @@ function loadSiteData() {
     console.log('لا توجد بيانات محفوظة، استخدام البيانات الافتراضية');
   }
   
-  // تحميل البيانات في النماذج
-  document.getElementById('heroTitle').value = siteData.hero.title;
-  document.getElementById('heroDesc1').value = siteData.hero.desc1;
-  document.getElementById('heroDesc2').value = siteData.hero.desc2;
-  document.getElementById('heroButton').value = siteData.hero.button;
-  document.getElementById('heroImagePreview').src = siteData.hero.image;
-  
-  document.getElementById('aboutTitle').value = siteData.about.title;
-  document.getElementById('aboutDesc').value = siteData.about.description;
-  
-  document.getElementById('missionText').value = siteData.vision.mission.text;
-  document.getElementById('missionIcon').value = siteData.vision.mission.icon;
-  document.getElementById('visionText').value = siteData.vision.vision.text;
-  document.getElementById('visionIcon').value = siteData.vision.vision.icon;
-  document.getElementById('valuesText').value = siteData.vision.values.text;
-  document.getElementById('valuesIcon').value = siteData.vision.values.icon;
-  
-  document.getElementById('contactPhone').value = siteData.contact.phone;
-  document.getElementById('contactEmail').value = siteData.contact.email;
-  document.getElementById('contactAddress').value = siteData.contact.address;
-  document.getElementById('contactMap').value = siteData.contact.map;
-  
-  console.log('تم تحميل جميع البيانات في النماذج');
+  try {
+    // تحميل البيانات في النماذج
+    if (document.getElementById('heroTitle')) {
+      document.getElementById('heroTitle').value = siteData.hero.title;
+      document.getElementById('heroDesc1').value = siteData.hero.desc1;
+      document.getElementById('heroDesc2').value = siteData.hero.desc2;
+      document.getElementById('heroButton').value = siteData.hero.button;
+      document.getElementById('heroImagePreview').src = siteData.hero.image;
+    }
+    
+    if (document.getElementById('aboutTitle')) {
+      document.getElementById('aboutTitle').value = siteData.about.title;
+      document.getElementById('aboutDesc').value = siteData.about.description;
+    }
+    
+    if (document.getElementById('missionText')) {
+      document.getElementById('missionText').value = siteData.vision.mission.text;
+      document.getElementById('missionIcon').value = siteData.vision.mission.icon;
+      document.getElementById('visionText').value = siteData.vision.vision.text;
+      document.getElementById('visionIcon').value = siteData.vision.vision.icon;
+      document.getElementById('valuesText').value = siteData.vision.values.text;
+      document.getElementById('valuesIcon').value = siteData.vision.values.icon;
+    }
+    
+    if (document.getElementById('contactPhone')) {
+      document.getElementById('contactPhone').value = siteData.contact.phone;
+      document.getElementById('contactEmail').value = siteData.contact.email;
+      document.getElementById('contactAddress').value = siteData.contact.address;
+      document.getElementById('contactMap').value = siteData.contact.map;
+    }
+    
+    console.log('تم تحميل جميع البيانات في النماذج');
+  } catch (error) {
+    console.error('خطأ في تحميل البيانات:', error);
+  }
 }
 
 // حفظ البيانات في localStorage
@@ -503,6 +660,11 @@ function resetContact() {
 function loadPartners() {
   console.log('loadPartners تم استدعاؤها');
   const grid = document.getElementById('partnersGrid');
+  if (!grid) {
+    console.error('عنصر partnersGrid غير موجود');
+    return;
+  }
+  
   grid.innerHTML = '';
   
   siteData.partners.forEach((partner, index) => {
@@ -566,7 +728,7 @@ function addPartner() {
     const newPartner = {
       name: name,
       type: type,
-      image: '../images/i1.png' // صورة افتراضية
+      image: '../i1.png' // صورة افتراضية
     };
     siteData.partners.push(newPartner);
     saveSiteData();
@@ -594,6 +756,11 @@ function deletePartner(index) {
 function loadServices() {
   console.log('loadServices تم استدعاؤها');
   const grid = document.getElementById('servicesGrid');
+  if (!grid) {
+    console.error('عنصر servicesGrid غير موجود');
+    return;
+  }
+  
   grid.innerHTML = '';
   
   siteData.services.forEach((service, index) => {
@@ -802,21 +969,35 @@ function loadWhyKarmelData() {
     return;
   }
   
-  document.getElementById('whyKarmelTitle').value = siteData.whyKarmel.title;
-  document.getElementById('whyKarmelSubtitle').value = siteData.whyKarmel.subtitle;
-  
-  // تحميل بيانات البطاقات
-  for (let i = 0; i < 4; i++) {
-    const card = siteData.whyKarmel.cards[i];
-    if (card) {
-      document.getElementById(`whyKarmelIcon${i+1}`).value = card.icon;
-      document.getElementById(`whyKarmelCardTitle${i+1}`).value = card.title;
-      document.getElementById(`whyKarmelCardDesc${i+1}`).value = card.desc;
-      document.getElementById(`whyKarmelStat${i+1}`).value = card.stat;
-      document.getElementById(`whyKarmelStatText${i+1}`).value = card.statText;
+  try {
+    if (document.getElementById('whyKarmelTitle')) {
+      document.getElementById('whyKarmelTitle').value = siteData.whyKarmel.title;
+      document.getElementById('whyKarmelSubtitle').value = siteData.whyKarmel.subtitle;
+      
+      // تحميل بيانات البطاقات
+      for (let i = 0; i < 4; i++) {
+        const card = siteData.whyKarmel.cards[i];
+        if (card) {
+          const iconElement = document.getElementById(`whyKarmelIcon${i+1}`);
+          const titleElement = document.getElementById(`whyKarmelCardTitle${i+1}`);
+          const descElement = document.getElementById(`whyKarmelCardDesc${i+1}`);
+          const statElement = document.getElementById(`whyKarmelStat${i+1}`);
+          const statTextElement = document.getElementById(`whyKarmelStatText${i+1}`);
+          
+          if (iconElement) iconElement.value = card.icon;
+          if (titleElement) titleElement.value = card.title;
+          if (descElement) descElement.value = card.desc;
+          if (statElement) statElement.value = card.stat;
+          if (statTextElement) statTextElement.value = card.statText;
+        }
+      }
+      console.log('تم تحميل بيانات قسم "لماذا كرمل+"');
+    } else {
+      console.log('عناصر قسم "لماذا كرمل+" غير موجودة');
     }
+  } catch (error) {
+    console.error('خطأ في تحميل بيانات قسم "لماذا كرمل+"', error);
   }
-  console.log('تم تحميل بيانات قسم "لماذا كرمل+"');
 }
 
 function updateWhyKarmel() {
@@ -865,32 +1046,42 @@ function loadPoliciesData() {
     return;
   }
   
-  // تحميل بيانات سياسة الخصوصية
-  if (siteData.policies.privacy) {
-    document.getElementById('privacyTitle').value = siteData.policies.privacy.title;
-    document.getElementById('privacyIntro').value = siteData.policies.privacy.intro;
-    document.getElementById('privacyInfoCollected').value = siteData.policies.privacy.infoCollected;
-    document.getElementById('privacyInfoUsage').value = siteData.policies.privacy.infoUsage;
-    document.getElementById('privacyProtection').value = siteData.policies.privacy.protection;
-    document.getElementById('privacySharing').value = siteData.policies.privacy.sharing;
-    document.getElementById('privacyRights').value = siteData.policies.privacy.rights;
-    document.getElementById('privacyUpdates').value = siteData.policies.privacy.updates;
+  try {
+    // تحميل بيانات سياسة الخصوصية
+    if (siteData.policies.privacy) {
+      const privacyElements = [
+        'privacyTitle', 'privacyIntro', 'privacyInfoCollected', 
+        'privacyInfoUsage', 'privacyProtection', 'privacySharing', 
+        'privacyRights', 'privacyUpdates'
+      ];
+      
+      privacyElements.forEach(elementId => {
+        const element = document.getElementById(elementId);
+        if (element && siteData.policies.privacy[elementId.replace('privacy', '').toLowerCase()]) {
+          element.value = siteData.policies.privacy[elementId.replace('privacy', '').toLowerCase()];
+        }
+      });
+    }
+    
+    // تحميل بيانات الشروط والأحكام
+    if (siteData.policies.terms) {
+      const termsElements = [
+        'termsTitle', 'termsAcceptance', 'termsServices', 'termsCommitments',
+        'termsPayments', 'termsIntellectual', 'termsConfidentiality',
+        'termsLiability', 'termsTermination', 'termsLaw'
+      ];
+      
+      termsElements.forEach(elementId => {
+        const element = document.getElementById(elementId);
+        if (element && siteData.policies.terms[elementId.replace('terms', '').toLowerCase()]) {
+          element.value = siteData.policies.terms[elementId.replace('terms', '').toLowerCase()];
+        }
+      });
+    }
+    console.log('تم تحميل بيانات قسم السياسات');
+  } catch (error) {
+    console.error('خطأ في تحميل بيانات قسم السياسات', error);
   }
-  
-  // تحميل بيانات الشروط والأحكام
-  if (siteData.policies.terms) {
-    document.getElementById('termsTitle').value = siteData.policies.terms.title;
-    document.getElementById('termsAcceptance').value = siteData.policies.terms.acceptance;
-    document.getElementById('termsServices').value = siteData.policies.terms.services;
-    document.getElementById('termsCommitments').value = siteData.policies.terms.commitments;
-    document.getElementById('termsPayments').value = siteData.policies.terms.payments;
-    document.getElementById('termsIntellectual').value = siteData.policies.terms.intellectual;
-    document.getElementById('termsConfidentiality').value = siteData.policies.terms.confidentiality;
-    document.getElementById('termsLiability').value = siteData.policies.terms.liability;
-    document.getElementById('termsTermination').value = siteData.policies.terms.termination;
-    document.getElementById('termsLaw').value = siteData.policies.terms.law;
-  }
-  console.log('تم تحميل بيانات قسم السياسات');
 }
 
 function updatePolicies() {
@@ -1400,3 +1591,365 @@ function editPartner(index) {
   // عرض النافذة
   document.getElementById('addPartnerModal').style.display = 'block';
 }
+
+// ===== الوظائف الجديدة للأقسام المضافة =====
+
+// إدارة الأسئلة الشائعة
+function loadFAQ() {
+  console.log('loadFAQ تم استدعاؤها');
+  const faqGrid = document.getElementById('faqGrid');
+  if (!faqGrid) {
+    console.error('عنصر faqGrid غير موجود');
+    return;
+  }
+  
+  faqGrid.innerHTML = '';
+  
+  siteData.faq.forEach((faq, index) => {
+    const faqCard = document.createElement('div');
+    faqCard.className = 'faq-card';
+    faqCard.innerHTML = `
+      <div class="faq-header">
+        <h4>${faq.question}</h4>
+        <div class="faq-actions">
+          <button class="btn btn-sm btn-secondary" onclick="editFAQ(${index})">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button class="btn btn-sm btn-danger" onclick="deleteFAQ(${index})">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+      <div class="faq-content">
+        <p>${faq.answer}</p>
+        <span class="faq-category">${getCategoryName(faq.category)}</span>
+      </div>
+    `;
+    faqGrid.appendChild(faqCard);
+  });
+  console.log('تم تحميل الأسئلة الشائعة:', siteData.faq.length);
+}
+
+function showAddFAQModal() {
+  document.getElementById('addFAQModal').style.display = 'block';
+  clearModalForm('addFAQModal');
+}
+
+function addFAQ() {
+  const question = document.getElementById('newFAQQuestion').value.trim();
+  const answer = document.getElementById('newFAQAnswer').value.trim();
+  const category = document.getElementById('newFAQCategory').value;
+  
+  if (!question || !answer) {
+    showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
+    return;
+  }
+  
+  const newFAQ = { question, answer, category };
+  siteData.faq.push(newFAQ);
+  
+  closeModal('addFAQModal');
+  loadFAQ();
+  updateStats();
+  showMessage('تم إضافة السؤال بنجاح', 'success');
+}
+
+function editFAQ(index) {
+  const faq = siteData.faq[index];
+  // يمكن إضافة نافذة تعديل هنا
+  showMessage('ميزة التعديل قيد التطوير', 'info');
+}
+
+function deleteFAQ(index) {
+  if (confirm('هل أنت متأكد من حذف هذا السؤال؟')) {
+    siteData.faq.splice(index, 1);
+    loadFAQ();
+    updateStats();
+    showMessage('تم حذف السؤال بنجاح', 'success');
+  }
+}
+
+// إدارة التقنيات المستقبلية
+function loadFutureTech() {
+  console.log('loadFutureTech تم استدعاؤها');
+  const techGrid = document.getElementById('techGrid');
+  if (!techGrid) {
+    console.error('عنصر techGrid غير موجود');
+    return;
+  }
+  
+  techGrid.innerHTML = '';
+  
+  siteData.futureTech.forEach((tech, index) => {
+    const techCard = document.createElement('div');
+    techCard.className = 'tech-card';
+    techCard.innerHTML = `
+      <div class="tech-icon">${tech.icon}</div>
+      <div class="tech-content">
+        <h4>${tech.name}</h4>
+        <p>${tech.description}</p>
+      </div>
+      <div class="tech-actions">
+        <button class="btn btn-sm btn-secondary" onclick="editTech(${index})">
+          <i class="fas fa-edit"></i>
+        </button>
+        <button class="btn btn-sm btn-danger" onclick="deleteTech(${index})">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    `;
+    techGrid.appendChild(techCard);
+  });
+  console.log('تم تحميل التقنيات المستقبلية:', siteData.futureTech.length);
+}
+
+function showAddTechModal() {
+  document.getElementById('addTechModal').style.display = 'block';
+  clearModalForm('addTechModal');
+}
+
+function addTechnology() {
+  const name = document.getElementById('newTechName').value.trim();
+  const description = document.getElementById('newTechDescription').value.trim();
+  const icon = document.getElementById('newTechIcon').value.trim();
+  
+  if (!name || !description || !icon) {
+    showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
+    return;
+  }
+  
+  const newTech = { name, description, icon, image: '' };
+  siteData.futureTech.push(newTech);
+  
+  closeModal('addTechModal');
+  loadFutureTech();
+  updateStats();
+  showMessage('تم إضافة التقنية بنجاح', 'success');
+}
+
+function editTech(index) {
+  const tech = siteData.futureTech[index];
+  // يمكن إضافة نافذة تعديل هنا
+  showMessage('ميزة التعديل قيد التطوير', 'info');
+}
+
+function deleteTech(index) {
+  if (confirm('هل أنت متأكد من حذف هذه التقنية؟')) {
+    siteData.futureTech.splice(index, 1);
+    loadFutureTech();
+    updateStats();
+    showMessage('تم حذف التقنية بنجاح', 'success');
+  }
+}
+
+// إدارة المدونة
+function loadBlog() {
+  console.log('loadBlog تم استدعاؤها');
+  const blogGrid = document.getElementById('blogGrid');
+  if (!blogGrid) {
+    console.error('عنصر blogGrid غير موجود');
+    return;
+  }
+  
+  blogGrid.innerHTML = '';
+  
+  siteData.blog.forEach((post, index) => {
+    const blogCard = document.createElement('div');
+    blogCard.className = 'blog-card';
+    blogCard.innerHTML = `
+      <div class="blog-image">
+        <img src="${post.image}" alt="${post.title}" onerror="this.src='../default-blog.jpg'">
+      </div>
+      <div class="blog-content">
+        <h4>${post.title}</h4>
+        <p>${post.excerpt}</p>
+        <div class="blog-meta">
+          <span class="blog-category">${getCategoryName(post.category)}</span>
+          <span class="blog-date">${formatDate(post.date)}</span>
+        </div>
+      </div>
+      <div class="blog-actions">
+        <button class="btn btn-sm btn-secondary" onclick="editBlog(${index})">
+          <i class="fas fa-edit"></i>
+        </button>
+        <button class="btn btn-sm btn-danger" onclick="deleteBlog(${index})">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    `;
+    blogGrid.appendChild(blogCard);
+  });
+  console.log('تم تحميل المدونة:', siteData.blog.length);
+}
+
+function showAddBlogModal() {
+  document.getElementById('addBlogModal').style.display = 'block';
+  clearModalForm('addBlogModal');
+  document.getElementById('newBlogDate').value = new Date().toISOString().split('T')[0];
+}
+
+function addBlog() {
+  const title = document.getElementById('newBlogTitle').value.trim();
+  const excerpt = document.getElementById('newBlogExcerpt').value.trim();
+  const content = document.getElementById('newBlogContent').value.trim();
+  const category = document.getElementById('newBlogCategory').value;
+  const date = document.getElementById('newBlogDate').value;
+  
+  if (!title || !excerpt || !content || !category || !date) {
+    showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
+    return;
+  }
+  
+  const newPost = { title, excerpt, content, category, date, image: '' };
+  siteData.blog.push(newPost);
+  
+  closeModal('addBlogModal');
+  loadBlog();
+  updateStats();
+  showMessage('تم إضافة المقال بنجاح', 'success');
+}
+
+function editBlog(index) {
+  const post = siteData.blog[index];
+  // يمكن إضافة نافذة تعديل هنا
+  showMessage('ميزة التعديل قيد التطوير', 'info');
+}
+
+function deleteBlog(index) {
+  if (confirm('هل أنت متأكد من حذف هذا المقال؟')) {
+    siteData.blog.splice(index, 1);
+    loadBlog();
+    updateStats();
+    showMessage('تم حذف المقال بنجاح', 'success');
+  }
+}
+
+// إدارة آراء العملاء
+function loadFeedback() {
+  console.log('loadFeedback تم استدعاؤها');
+  const feedbackGrid = document.getElementById('feedbackGrid');
+  if (!feedbackGrid) {
+    console.error('عنصر feedbackGrid غير موجود');
+    return;
+  }
+  
+  feedbackGrid.innerHTML = '';
+  
+  siteData.feedback.forEach((feedback, index) => {
+    const feedbackCard = document.createElement('div');
+    feedbackCard.className = 'feedback-card';
+    feedbackCard.innerHTML = `
+      <div class="feedback-image">
+        <img src="${feedback.image}" alt="${feedback.name}" onerror="this.src='../default-avatar.jpg'">
+      </div>
+      <div class="feedback-content">
+        <h4>${feedback.name}</h4>
+        <p class="feedback-company">${feedback.company}</p>
+        <p class="feedback-text">${feedback.text}</p>
+      </div>
+      <div class="feedback-actions">
+        <button class="btn btn-sm btn-secondary" onclick="editFeedback(${index})">
+          <i class="fas fa-edit"></i>
+        </button>
+        <button class="btn btn-sm btn-danger" onclick="deleteFeedback(${index})">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    `;
+    feedbackGrid.appendChild(feedbackCard);
+  });
+  console.log('تم تحميل آراء العملاء:', siteData.feedback.length);
+}
+
+function showAddFeedbackModal() {
+  document.getElementById('addFeedbackModal').style.display = 'block';
+  clearModalForm('addFeedbackModal');
+}
+
+function addFeedback() {
+  const name = document.getElementById('newFeedbackName').value.trim();
+  const company = document.getElementById('newFeedbackCompany').value.trim();
+  const text = document.getElementById('newFeedbackText').value.trim();
+  
+  if (!name || !company || !text) {
+    showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
+    return;
+  }
+  
+  const newFeedback = { name, company, text, image: '' };
+  siteData.feedback.push(newFeedback);
+  
+  closeModal('addFeedbackModal');
+  loadFeedback();
+  updateStats();
+  showMessage('تم إضافة رأي العميل بنجاح', 'success');
+}
+
+function editFeedback(index) {
+  const feedback = siteData.feedback[index];
+  // يمكن إضافة نافذة تعديل هنا
+  showMessage('ميزة التعديل قيد التطوير', 'info');
+}
+
+function deleteFeedback(index) {
+  if (confirm('هل أنت متأكد من حذف هذا الرأي؟')) {
+    siteData.feedback.splice(index, 1);
+    loadFeedback();
+    updateStats();
+    showMessage('تم حذف رأي العميل بنجاح', 'success');
+  }
+}
+
+// وظائف مساعدة
+function getCategoryName(category) {
+  const categories = {
+    'general': 'عام',
+    'technical': 'تقني',
+    'pricing': 'الأسعار',
+    'support': 'الدعم',
+    'technology': 'تقنية',
+    'business': 'أعمال',
+    'development': 'تطوير',
+    'news': 'أخبار'
+  };
+  return categories[category] || category;
+}
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('ar-SA');
+}
+
+// تحديث الإحصائيات
+function updateStats() {
+  console.log('updateStats تم استدعاؤها');
+  try {
+    const elements = {
+      'partnersCount': siteData.partners.length,
+      'servicesCount': siteData.services.length,
+      'faqCount': siteData.faq.length,
+      'techCount': siteData.futureTech.length,
+      'blogCount': siteData.blog.length
+    };
+    
+    Object.keys(elements).forEach(elementId => {
+      const element = document.getElementById(elementId);
+      if (element) {
+        element.textContent = elements[elementId];
+      } else {
+        console.warn(`عنصر ${elementId} غير موجود`);
+      }
+    });
+    
+    // إضافة فحص لـ feedbackCount إذا كان موجوداً
+    const feedbackCountElement = document.getElementById('feedbackCount');
+    if (feedbackCountElement) {
+      feedbackCountElement.textContent = siteData.feedback.length;
+    }
+    
+    console.log('تم تحديث الإحصائيات');
+  } catch (error) {
+    console.error('خطأ في تحديث الإحصائيات:', error);
+  }
+}
+
