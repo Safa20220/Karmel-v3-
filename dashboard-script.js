@@ -238,32 +238,17 @@ let siteData = {
   }
 };
 
-// حفظ البيانات الأصلية الافتراضية
-const defaultSiteData = JSON.parse(JSON.stringify(siteData));
-
-// دالة استعادة البيانات الأصلية لقسم معين
-function restoreDefaultData(section) {
-  if (defaultSiteData[section]) {
-    // استعادة البيانات في siteData
-    siteData[section] = JSON.parse(JSON.stringify(defaultSiteData[section]));
-
-    // حفظ البيانات المستعادة
-    saveSiteData();
-
-    // تحديث الموقع الأساسي
-    updateMainSiteContent(section);
-
-    return true;
-  }
-  return false;
-}
-
 // التحقق من تسجيل الدخول
 function checkAuth() {
   console.log('checkAuth تم استدعاؤها');
+  
+  // للاختبار - يمكن تعطيل هذا السطر مؤقتاً
+  // return true;
+  
   const isLoggedIn = sessionStorage.getItem('adminLoggedIn');
   if (isLoggedIn !== 'true') {
     console.log('المستخدم غير مسجل دخول');
+    console.log('قيمة adminLoggedIn في sessionStorage:', isLoggedIn);
     return false;
   } else {
     console.log('المستخدم مسجل دخول بنجاح');
@@ -274,23 +259,60 @@ function checkAuth() {
 // تحميل البيانات عند بدء التطبيق
 function initializeDashboard() {
   console.log('initializeDashboard تم استدعاؤها');
+  
   if (!checkAuth()) {
+    console.log('فشل في التحقق من الهوية، إعادة التوجيه إلى صفحة تسجيل الدخول');
     window.location.href = 'login.html';
     return;
   }
-
-  loadSiteData();
-  loadPartners();
-  loadServices();
-  loadFAQ();
-  loadFutureTech();
-  loadBlog();
-  loadFeedback();
-  updateStats();
-  setupEventListeners();
-
-  showSection('overview');
-  console.log('تم تهيئة الداشبورد بنجاح');
+  
+  console.log('تم التحقق من الهوية بنجاح، بدء تحميل البيانات...');
+  
+  try {
+    loadSiteData();
+    console.log('تم تحميل بيانات الموقع');
+    
+    loadPartners();
+    console.log('تم تحميل الشركاء');
+    
+    loadServices();
+    console.log('تم تحميل الخدمات');
+    
+    loadFAQ();
+    console.log('تم تحميل الأسئلة الشائعة');
+    
+    loadFutureTech();
+    console.log('تم تحميل التقنيات المستقبلية');
+    
+    loadBlog();
+    console.log('تم تحميل المدونة');
+    
+    loadFeedback();
+    console.log('تم تحميل آراء العملاء');
+    
+    loadWhyKarmelData();
+    console.log('تم تحميل بيانات لماذا كرمل');
+    
+    loadPoliciesData();
+    console.log('تم تحميل بيانات السياسات');
+    
+    updateStats();
+    console.log('تم تحديث الإحصائيات');
+    
+    console.log('بدء إعداد مستمعي الأحداث...');
+    setupEventListeners();
+    
+    console.log('إظهار قسم النظرة العامة...');
+    showSection('overview');
+    
+    // اختبار التنقل
+    console.log('بدء اختبار التنقل...');
+    testNavigation();
+    
+    console.log('تم تهيئة الداشبورد بنجاح');
+  } catch (error) {
+    console.error('خطأ في تهيئة الداشبورد:', error);
+  }
 }
 
 // تحميل بيانات الموقع من localStorage أو استخدام البيانات الافتراضية
@@ -303,7 +325,7 @@ function loadSiteData() {
   } else {
     console.log('لا توجد بيانات محفوظة، استخدام البيانات الافتراضية');
   }
-
+  
   try {
     // تحميل البيانات في النماذج
     if (document.getElementById('heroTitle')) {
@@ -313,23 +335,28 @@ function loadSiteData() {
       document.getElementById('heroButton').value = siteData.hero.button;
       document.getElementById('heroImagePreview').src = siteData.hero.image;
     }
-
+    
     if (document.getElementById('aboutTitle')) {
       document.getElementById('aboutTitle').value = siteData.about.title;
       document.getElementById('aboutDesc').value = siteData.about.description;
     }
-
+    
+    if (document.getElementById('missionText')) {
+      document.getElementById('missionText').value = siteData.vision.mission.text;
+      document.getElementById('missionIcon').value = siteData.vision.mission.icon;
+      document.getElementById('visionText').value = siteData.vision.vision.text;
+      document.getElementById('visionIcon').value = siteData.vision.vision.icon;
+      document.getElementById('valuesText').value = siteData.vision.values.text;
+      document.getElementById('valuesIcon').value = siteData.vision.values.icon;
+    }
+    
     if (document.getElementById('contactPhone')) {
       document.getElementById('contactPhone').value = siteData.contact.phone;
       document.getElementById('contactEmail').value = siteData.contact.email;
       document.getElementById('contactAddress').value = siteData.contact.address;
       document.getElementById('contactMap').value = siteData.contact.map;
     }
-
-    // تحميل بيانات الأقسام الجديدة
-    loadWhyKarmelData();
-    loadPoliciesData();
-
+    
     console.log('تم تحميل جميع البيانات في النماذج');
   } catch (error) {
     console.error('خطأ في تحميل البيانات:', error);
@@ -343,7 +370,7 @@ function saveSiteData() {
   localStorage.setItem('karmelSiteData', JSON.stringify(siteData));
   localStorage.setItem('lastSiteUpdate', new Date().getTime().toString());
   console.log('تم حفظ البيانات في localStorage');
-
+  
   // التحقق من أن البيانات تم حفظها بشكل صحيح
   const savedData = localStorage.getItem('karmelSiteData');
   if (savedData) {
@@ -355,55 +382,16 @@ function saveSiteData() {
 // دالة تحديث الموقع الأساسي
 function updateMainSiteContent(section = null) {
   console.log('updateMainSiteContent تم استدعاؤها مع القسم:', section);
-
-  if (window.siteUpdater) {
-    console.log('siteUpdater متاح');
-    if (section) {
-      // تحديث قسم محدد
-      console.log('تحديث قسم محدد:', section);
-      switch (section) {
-        case 'hero':
-          window.siteUpdater.updateHeroSection();
-          break;
-        case 'whyKarmel':
-          window.siteUpdater.updateWhyKarmelSection();
-          break;
-        case 'policies':
-          window.siteUpdater.updatePrivacyPolicy();
-          window.siteUpdater.updateTermsAndConditions();
-          break;
-        case 'services':
-          window.siteUpdater.updateServicesSection();
-          break;
-        case 'vision':
-          window.siteUpdater.updateVisionSection();
-          break;
-        case 'about':
-          console.log('استدعاء updateAboutSection...');
-          window.siteUpdater.updateAboutSection();
-          console.log('تم استدعاء updateAboutSection');
-          break;
-        case 'contact':
-          window.siteUpdater.updateContactSection();
-          break;
-        case 'partners':
-          window.siteUpdater.updatePartnersSection();
-          break;
-        default:
-          window.siteUpdater.updateAllSections();
-      }
-    } else {
-      // تحديث جميع الأقسام
-      console.log('تحديث جميع الأقسام');
-      window.siteUpdater.updateAllSections();
-    }
-  } else {
-    console.error('siteUpdater غير متاح!');
-  }
-
+  
+  // حفظ البيانات في localStorage أولاً
+  saveSiteData();
+  
   // إرسال إشعار للموقع الأساسي بالتحديث
   localStorage.setItem('forceUpdate', new Date().getTime().toString());
-  console.log('تم إرسال إشعار تحديث للموقع الأساسي');
+  console.log('تم إرسال إشعار تحديث للموقع الأساسي للمقسم:', section);
+  
+  // إظهار رسالة تأكيد للمستخدم
+  showNotification(`تم تحديث ${section || 'جميع الأقسام'} بنجاح`, 'success');
 }
 
 // دالة اختبار التحديث
@@ -437,9 +425,9 @@ function showNotification(message, type = 'info') {
     transform: translateX(100%);
     transition: transform 0.3s ease;
   `;
-
+  
   // تحديد اللون حسب النوع
-  switch (type) {
+  switch(type) {
     case 'success':
       notification.style.backgroundColor = '#10b981';
       break;
@@ -452,15 +440,15 @@ function showNotification(message, type = 'info') {
     default:
       notification.style.backgroundColor = '#3b82f6';
   }
-
+  
   notification.textContent = message;
   document.body.appendChild(notification);
-
+  
   // إظهار الإشعار
   setTimeout(() => {
     notification.style.transform = 'translateX(0)';
   }, 100);
-
+  
   // إخفاء الإشعار بعد 3 ثوانٍ
   setTimeout(() => {
     notification.style.transform = 'translateX(100%)';
@@ -489,67 +477,143 @@ function updateStats() {
 // إعداد مستمعي الأحداث
 function setupEventListeners() {
   console.log('setupEventListeners تم استدعاؤها');
+  
   // التنقل بين الأقسام
-  document.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', function (e) {
+  const navLinks = document.querySelectorAll('.nav-link');
+  console.log('تم العثور على روابط التنقل:', navLinks.length);
+  
+  navLinks.forEach((link, index) => {
+    const section = link.getAttribute('data-section');
+    console.log(`رابط ${index + 1}:`, section, link);
+    
+    link.addEventListener('click', function(e) {
       e.preventDefault();
-      const section = this.getAttribute('data-section');
-      showSection(section);
+      console.log('تم النقر على رابط التنقل:', section);
+      const sectionId = this.getAttribute('data-section');
+      console.log('سيتم إظهار القسم:', sectionId);
+      showSection(sectionId);
     });
   });
-
-  // تسجيل الخروج
-  document.getElementById('logoutBtn').addEventListener('click', logout);
-
-  // معاينة الصور
-  document.getElementById('heroImage').addEventListener('change', function (e) {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        document.getElementById('heroImagePreview').src = e.target.result;
-      };
-      reader.readAsDataURL(file);
+  
+  // إضافة مستمعي أحداث لروابط الصفحات الرئيسية
+  const pageLinks = document.querySelectorAll('.page-link');
+  console.log('تم العثور على روابط الصفحات الرئيسية:', pageLinks.length);
+  
+  pageLinks.forEach(link => {
+    link.addEventListener('click', function(e) {
+      console.log('تم النقر على رابط:', this.href);
+      // السماح للرابط بالعمل بشكل طبيعي
+      // لا نحتاج لمنع السلوك الافتراضي هنا
+    });
+  });
+  
+  // دالة فتح الصفحات
+  window.openPage = function(url) {
+    console.log('محاولة فتح الصفحة:', url);
+    try {
+      const newWindow = window.open(url, '_blank');
+      if (newWindow) {
+        console.log('تم فتح الصفحة بنجاح');
+      } else {
+        console.error('فشل في فتح الصفحة - قد يكون منع النوافذ المنبثقة مفعلاً');
+        // محاولة فتح في نفس النافذة إذا فشل فتح نافذة جديدة
+        window.location.href = url;
+      }
+    } catch (error) {
+      console.error('خطأ في فتح الصفحة:', error);
+      // محاولة فتح في نفس النافذة
+      window.location.href = url;
     }
-  });
-
+  };
+  
+  // تسجيل الخروج
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', logout);
+    console.log('تم إعداد مستمع حدث تسجيل الخروج');
+  } else {
+    console.warn('لم يتم العثور على زر تسجيل الخروج');
+  }
+  
+  // معاينة الصور
+  const heroImage = document.getElementById('heroImage');
+  if (heroImage) {
+    heroImage.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const preview = document.getElementById('heroImagePreview');
+          if (preview) {
+            preview.src = e.target.result;
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+    console.log('تم إعداد مستمع حدث معاينة الصور');
+  }
+  
   // إغلاق النوافذ المنبثقة
-  document.querySelectorAll('.close').forEach(closeBtn => {
-    closeBtn.addEventListener('click', function () {
+  const closeButtons = document.querySelectorAll('.close');
+  console.log('تم العثور على أزرار الإغلاق:', closeButtons.length);
+  
+  closeButtons.forEach(closeBtn => {
+    closeBtn.addEventListener('click', function() {
       const modal = this.closest('.modal');
-      modal.style.display = 'none';
+      if (modal) {
+        modal.style.display = 'none';
+        console.log('تم إغلاق النافذة المنبثقة');
+      }
     });
   });
-
+  
   // إغلاق النوافذ المنبثقة عند النقر خارجها
-  window.addEventListener('click', function (e) {
+  window.addEventListener('click', function(e) {
     if (e.target.classList.contains('modal')) {
       e.target.style.display = 'none';
+      console.log('تم إغلاق النافذة المنبثقة بالنقر خارجها');
     }
   });
-
+  
   console.log('تم إعداد جميع مستمعي الأحداث');
 }
 
 // إظهار قسم معين
 function showSection(sectionId) {
   console.log('showSection تم استدعاؤها مع القسم:', sectionId);
+  
+  // التحقق من وجود القسم
+  const targetSection = document.getElementById(sectionId);
+  if (!targetSection) {
+    console.error('القسم غير موجود:', sectionId);
+    return;
+  }
+  
   // إخفاء جميع الأقسام
   document.querySelectorAll('.dashboard-section').forEach(section => {
     section.classList.remove('active');
+    console.log('تم إزالة active من:', section.id);
   });
-
+  
   // إزالة الفئة النشطة من جميع الروابط
   document.querySelectorAll('.nav-link').forEach(link => {
     link.classList.remove('active');
   });
-
+  
   // إظهار القسم المطلوب
-  document.getElementById(sectionId).classList.add('active');
-
+  targetSection.classList.add('active');
+  console.log('تم إضافة active إلى:', sectionId);
+  
   // إضافة الفئة النشطة للرابط
-  document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
-
+  const activeLink = document.querySelector(`[data-section="${sectionId}"]`);
+  if (activeLink) {
+    activeLink.classList.add('active');
+    console.log('تم إضافة active للرابط:', sectionId);
+  } else {
+    console.warn('لم يتم العثور على الرابط للقسم:', sectionId);
+  }
+  
   console.log('تم إظهار القسم:', sectionId);
 }
 
@@ -557,28 +621,21 @@ function showSection(sectionId) {
 function updateHero() {
   console.log('updateHero تم استدعاؤها');
   showLoading();
-
-  // فحص وجود العناصر قبل الوصول إليها
-  const heroTitle = document.getElementById('heroTitle');
-  const heroDesc1 = document.getElementById('heroDesc1');
-  const heroDesc2 = document.getElementById('heroDesc2');
-  const heroButton = document.getElementById('heroButton');
-
-  // تحديث البيانات فقط إذا كانت العناصر موجودة
-  if (heroTitle) siteData.hero.title = heroTitle.value;
-  if (heroDesc1) siteData.hero.desc1 = heroDesc1.value;
-  if (heroDesc2) siteData.hero.desc2 = heroDesc2.value;
-  if (heroButton) siteData.hero.button = heroButton.value;
-
+  
+  siteData.hero.title = document.getElementById('heroTitle').value;
+  siteData.hero.desc1 = document.getElementById('heroDesc1').value;
+  siteData.hero.desc2 = document.getElementById('heroDesc2').value;
+  siteData.hero.button = document.getElementById('heroButton').value;
+  
   console.log('بيانات Hero المحدثة:', siteData.hero);
-
-  const imageFile = document.getElementById('heroImage')?.files[0];
+  
+  const imageFile = document.getElementById('heroImage').files[0];
   if (imageFile) {
     const reader = new FileReader();
-    reader.onload = function (e) {
+    reader.onload = function(e) {
       siteData.hero.image = e.target.result;
       saveSiteData();
-      updateMainSiteContent('hero');
+        updateMainSiteContent('hero');
       hideLoading();
       showSuccessMessage('تم تحديث الصفحة الرئيسية بنجاح!');
     };
@@ -593,52 +650,25 @@ function updateHero() {
 
 // إعادة تعيين قسم Hero
 function resetHero() {
-  // استعادة البيانات الأصلية
-  if (restoreDefaultData('hero')) {
-    // تحديث العناصر في النموذج
-    const heroTitle = document.getElementById('heroTitle');
-    const heroDesc1 = document.getElementById('heroDesc1');
-    const heroDesc2 = document.getElementById('heroDesc2');
-    const heroButton = document.getElementById('heroButton');
-    const heroImagePreview = document.getElementById('heroImagePreview');
-
-    if (heroTitle) heroTitle.value = siteData.hero.title;
-    if (heroDesc1) heroDesc1.value = siteData.hero.desc1;
-    if (heroDesc2) heroDesc2.value = siteData.hero.desc2;
-    if (heroButton) heroButton.value = siteData.hero.button;
-    if (heroImagePreview) heroImagePreview.src = siteData.hero.image;
-
-    showMessage('تم إعادة تعيين البيانات إلى القيم الأصلية', 'success');
-  } else {
-    showMessage('خطأ في إعادة تعيين البيانات', 'error');
-  }
+  document.getElementById('heroTitle').value = siteData.hero.title;
+  document.getElementById('heroDesc1').value = siteData.hero.desc1;
+  document.getElementById('heroDesc2').value = siteData.hero.desc2;
+  document.getElementById('heroButton').value = siteData.hero.button;
+  document.getElementById('heroImagePreview').src = siteData.hero.image;
+  showMessage('تم إعادة تعيين البيانات', 'warning');
 }
 
 // تحديث قسم About
 function updateAbout() {
   console.log('بدء تحديث قسم "من نحن"...');
   showLoading();
-
-  // فحص وجود العناصر قبل الوصول إليها
-  const aboutTitle = document.getElementById('aboutTitle');
-  const aboutDesc = document.getElementById('aboutDesc');
-
-  if (!aboutTitle || !aboutDesc) {
-    console.error('عناصر قسم "من نحن" غير موجودة');
-    hideLoading();
-    showMessage('خطأ: عناصر النموذج غير موجودة', 'error');
-    return;
-  }
-
   // جمع البيانات من النموذج
-  const newTitle = aboutTitle.value;
-  const newDesc = aboutDesc.value;
+  const newTitle = document.getElementById('aboutTitle').value;
+  const newDesc = document.getElementById('aboutDesc').value;
   console.log('البيانات الجديدة:', { title: newTitle, desc: newDesc });
-
   // تحديث البيانات
   siteData.about.title = newTitle;
   siteData.about.description = newDesc;
-
   // حفظ البيانات
   saveSiteData();
   // تحديث الموقع الأساسي
@@ -650,41 +680,20 @@ function updateAbout() {
 
 // إعادة تعيين قسم About
 function resetAbout() {
-  // استعادة البيانات الأصلية
-  if (restoreDefaultData('about')) {
-    // تحديث العناصر في النموذج
-    const aboutTitle = document.getElementById('aboutTitle');
-    const aboutDesc = document.getElementById('aboutDesc');
-
-    if (aboutTitle) aboutTitle.value = siteData.about.title;
-    if (aboutDesc) aboutDesc.value = siteData.about.description;
-
-    showMessage('تم إعادة تعيين البيانات إلى القيم الأصلية', 'success');
-  } else {
-    showMessage('خطأ في إعادة تعيين البيانات', 'error');
-  }
+  document.getElementById('aboutTitle').value = siteData.about.title;
+  document.getElementById('aboutDesc').value = siteData.about.description;
+  showMessage('تم إعادة تعيين البيانات', 'warning');
 }
 
 // تحديث قسم Vision
 function updateVision() {
   showLoading();
-
-  // فحص وجود العناصر قبل الوصول إليها
-  const missionText = document.getElementById('missionText');
-  const missionIcon = document.getElementById('missionIcon');
-  const visionText = document.getElementById('visionText');
-  const visionIcon = document.getElementById('visionIcon');
-  const valuesText = document.getElementById('valuesText');
-  const valuesIcon = document.getElementById('valuesIcon');
-
-  // تحديث البيانات فقط إذا كانت العناصر موجودة
-  if (missionText) siteData.vision.mission.text = missionText.value;
-  if (missionIcon) siteData.vision.mission.icon = missionIcon.value;
-  if (visionText) siteData.vision.vision.text = visionText.value;
-  if (visionIcon) siteData.vision.vision.icon = visionIcon.value;
-  if (valuesText) siteData.vision.values.text = valuesText.value;
-  if (valuesIcon) siteData.vision.values.icon = valuesIcon.value;
-
+  siteData.vision.mission.text = document.getElementById('missionText').value;
+  siteData.vision.mission.icon = document.getElementById('missionIcon').value;
+  siteData.vision.vision.text = document.getElementById('visionText').value;
+  siteData.vision.vision.icon = document.getElementById('visionIcon').value;
+  siteData.vision.values.text = document.getElementById('valuesText').value;
+  siteData.vision.values.icon = document.getElementById('valuesIcon').value;
   saveSiteData();
   updateMainSiteContent('vision');
   hideLoading();
@@ -693,45 +702,22 @@ function updateVision() {
 
 // إعادة تعيين قسم Vision
 function resetVision() {
-  // استعادة البيانات الأصلية
-  if (restoreDefaultData('vision')) {
-    // تحديث العناصر في النموذج
-    const missionText = document.getElementById('missionText');
-    const missionIcon = document.getElementById('missionIcon');
-    const visionText = document.getElementById('visionText');
-    const visionIcon = document.getElementById('visionIcon');
-    const valuesText = document.getElementById('valuesText');
-    const valuesIcon = document.getElementById('valuesIcon');
-
-    if (missionText) missionText.value = siteData.vision.mission.text;
-    if (missionIcon) missionIcon.value = siteData.vision.mission.icon;
-    if (visionText) visionText.value = siteData.vision.vision.text;
-    if (visionIcon) visionIcon.value = siteData.vision.vision.icon;
-    if (valuesText) valuesText.value = siteData.vision.values.text;
-    if (valuesIcon) valuesIcon.value = siteData.vision.values.icon;
-
-    showMessage('تم إعادة تعيين البيانات إلى القيم الأصلية', 'success');
-  } else {
-    showMessage('خطأ في إعادة تعيين البيانات', 'error');
-  }
+  document.getElementById('missionText').value = siteData.vision.mission.text;
+  document.getElementById('missionIcon').value = siteData.vision.mission.icon;
+  document.getElementById('visionText').value = siteData.vision.vision.text;
+  document.getElementById('visionIcon').value = siteData.vision.vision.icon;
+  document.getElementById('valuesText').value = siteData.vision.values.text;
+  document.getElementById('valuesIcon').value = siteData.vision.values.icon;
+  showMessage('تم إعادة تعيين البيانات', 'warning');
 }
 
 // تحديث معلومات التواصل
 function updateContact() {
   showLoading();
-
-  // فحص وجود العناصر قبل الوصول إليها
-  const contactPhone = document.getElementById('contactPhone');
-  const contactEmail = document.getElementById('contactEmail');
-  const contactAddress = document.getElementById('contactAddress');
-  const contactMap = document.getElementById('contactMap');
-
-  // تحديث البيانات فقط إذا كانت العناصر موجودة
-  if (contactPhone) siteData.contact.phone = contactPhone.value;
-  if (contactEmail) siteData.contact.email = contactEmail.value;
-  if (contactAddress) siteData.contact.address = contactAddress.value;
-  if (contactMap) siteData.contact.map = contactMap.value;
-
+  siteData.contact.phone = document.getElementById('contactPhone').value;
+  siteData.contact.email = document.getElementById('contactEmail').value;
+  siteData.contact.address = document.getElementById('contactAddress').value;
+  siteData.contact.map = document.getElementById('contactMap').value;
   saveSiteData();
   updateMainSiteContent('contact');
   hideLoading();
@@ -740,23 +726,11 @@ function updateContact() {
 
 // إعادة تعيين معلومات التواصل
 function resetContact() {
-  // استعادة البيانات الأصلية
-  if (restoreDefaultData('contact')) {
-    // تحديث العناصر في النموذج
-    const contactPhone = document.getElementById('contactPhone');
-    const contactEmail = document.getElementById('contactEmail');
-    const contactAddress = document.getElementById('contactAddress');
-    const contactMap = document.getElementById('contactMap');
-
-    if (contactPhone) contactPhone.value = siteData.contact.phone;
-    if (contactEmail) contactEmail.value = siteData.contact.email;
-    if (contactAddress) contactAddress.value = siteData.contact.address;
-    if (contactMap) contactMap.value = siteData.contact.map;
-
-    showMessage('تم إعادة تعيين البيانات إلى القيم الأصلية', 'success');
-  } else {
-    showMessage('خطأ في إعادة تعيين البيانات', 'error');
-  }
+  document.getElementById('contactPhone').value = siteData.contact.phone;
+  document.getElementById('contactEmail').value = siteData.contact.email;
+  document.getElementById('contactAddress').value = siteData.contact.address;
+  document.getElementById('contactMap').value = siteData.contact.map;
+  showMessage('تم إعادة تعيين البيانات', 'warning');
 }
 
 // تحميل الشركاء
@@ -767,9 +741,9 @@ function loadPartners() {
     console.error('عنصر partnersGrid غير موجود');
     return;
   }
-
+  
   grid.innerHTML = '';
-
+  
   siteData.partners.forEach((partner, index) => {
     const card = createPartnerCard(partner, index);
     grid.appendChild(card);
@@ -804,15 +778,15 @@ function addPartner() {
   const name = document.getElementById('newPartnerName').value;
   const type = document.getElementById('newPartnerType').value;
   const imageFile = document.getElementById('newPartnerImage').files[0];
-
+  
   if (!name || !type) {
     showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
     return;
   }
-
+  
   if (imageFile) {
     const reader = new FileReader();
-    reader.onload = function (e) {
+    reader.onload = function(e) {
       const newPartner = {
         name: name,
         type: type,
@@ -820,7 +794,7 @@ function addPartner() {
       };
       siteData.partners.push(newPartner);
       saveSiteData();
-      updateMainSiteContent('partners');
+    updateMainSiteContent('partners');
       loadPartners();
       updateStats();
       closeModal('addPartnerModal');
@@ -863,14 +837,16 @@ function loadServices() {
     console.error('عنصر servicesGrid غير موجود');
     return;
   }
-
+  
   grid.innerHTML = '';
-
+  
   siteData.services.forEach((service, index) => {
     const card = createServiceCard(service, index);
     grid.appendChild(card);
   });
   console.log('تم تحميل الخدمات:', siteData.services.length);
+  // مزامنة فورية مع الموقع الأساسي
+  updateMainSiteContent('services');
 }
 
 // إنشاء بطاقة خدمة
@@ -898,16 +874,16 @@ function createServiceCard(service, index) {
 function addService() {
   const name = document.getElementById('newServiceName').value;
   const icon = document.getElementById('newServiceIcon').value;
-
+  
   if (!name || !icon) {
     showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
     return;
   }
-
+  
   const newService = { name: name, icon: icon };
   siteData.services.push(newService);
   saveSiteData();
-  updateMainSiteContent('services');
+    updateMainSiteContent('services');
   loadServices();
   updateStats();
   closeModal('addServiceModal');
@@ -932,7 +908,7 @@ function editService(index) {
   document.getElementById('editServiceIndex').value = index;
   document.getElementById('editServiceName').value = service.name;
   document.getElementById('editServiceIcon').value = service.icon;
-
+  
   document.getElementById('editServiceModal').style.display = 'block';
 }
 
@@ -941,12 +917,12 @@ function updateService() {
   const index = parseInt(document.getElementById('editServiceIndex').value);
   const name = document.getElementById('editServiceName').value;
   const icon = document.getElementById('editServiceIcon').value;
-
+  
   if (!name || !icon) {
     showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
     return;
   }
-
+  
   siteData.services[index] = { name: name, icon: icon };
   saveSiteData();
   updateMainSiteContent('services');
@@ -987,9 +963,9 @@ function showMessage(message, type = 'success') {
   const messageElement = document.createElement('div');
   messageElement.className = `message ${type}`;
   messageElement.textContent = message;
-
+  
   container.appendChild(messageElement);
-
+  
   // إزالة الرسالة بعد 5 ثوانٍ
   setTimeout(() => {
     messageElement.remove();
@@ -1009,7 +985,7 @@ function hideLoading() {
 function showSuccessMessage(message) {
   console.log('showSuccessMessage:', message);
   showMessage(message, 'success');
-
+  
   // إضافة تأثير بصري إضافي
   const successIcon = document.createElement('div');
   successIcon.innerHTML = `
@@ -1018,9 +994,9 @@ function showSuccessMessage(message) {
       <path class="success-checkmark__check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
     </svg>
   `;
-
+  
   document.body.appendChild(successIcon);
-
+  
   setTimeout(() => {
     successIcon.remove();
   }, 2000);
@@ -1039,17 +1015,17 @@ function logout() {
 function updateMainSite() {
   try {
     showLoading();
-
+    
     // حفظ البيانات مع طابع زمني
     saveSiteData();
-
+    
     // إرسال إشعار للموقع الأساسي بالتحديث
     localStorage.setItem('forceUpdate', new Date().getTime().toString());
-
+    
     // فتح الموقع الأساسي في نافذة جديدة
     const mainSiteUrl = window.location.origin + '/index.html';
     window.open(mainSiteUrl, '_blank');
-
+    
     hideLoading();
     showSuccessMessage('تم تحديث الموقع الأساسي بنجاح! تم فتح الموقع في نافذة جديدة.');
   } catch (error) {
@@ -1059,7 +1035,7 @@ function updateMainSite() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
   console.log('dashboard-script.js: DOMContentLoaded تم استدعاؤها');
   initializeDashboard();
 });
@@ -1071,22 +1047,22 @@ function loadWhyKarmelData() {
     console.log('لا توجد بيانات لقسم "لماذا كرمل+"');
     return;
   }
-
+  
   try {
     if (document.getElementById('whyKarmelTitle')) {
       document.getElementById('whyKarmelTitle').value = siteData.whyKarmel.title;
       document.getElementById('whyKarmelSubtitle').value = siteData.whyKarmel.subtitle;
-
+      
       // تحميل بيانات البطاقات
       for (let i = 0; i < 4; i++) {
         const card = siteData.whyKarmel.cards[i];
         if (card) {
-          const iconElement = document.getElementById(`whyKarmelIcon${i + 1}`);
-          const titleElement = document.getElementById(`whyKarmelCardTitle${i + 1}`);
-          const descElement = document.getElementById(`whyKarmelCardDesc${i + 1}`);
-          const statElement = document.getElementById(`whyKarmelStat${i + 1}`);
-          const statTextElement = document.getElementById(`whyKarmelStatText${i + 1}`);
-
+          const iconElement = document.getElementById(`whyKarmelIcon${i+1}`);
+          const titleElement = document.getElementById(`whyKarmelCardTitle${i+1}`);
+          const descElement = document.getElementById(`whyKarmelCardDesc${i+1}`);
+          const statElement = document.getElementById(`whyKarmelStat${i+1}`);
+          const statTextElement = document.getElementById(`whyKarmelStatText${i+1}`);
+          
           if (iconElement) iconElement.value = card.icon;
           if (titleElement) titleElement.value = card.title;
           if (descElement) descElement.value = card.desc;
@@ -1105,7 +1081,7 @@ function loadWhyKarmelData() {
 
 function updateWhyKarmel() {
   showLoading();
-
+  
   if (!siteData.whyKarmel) {
     siteData.whyKarmel = {
       title: "",
@@ -1113,38 +1089,32 @@ function updateWhyKarmel() {
       cards: []
     };
   }
-
+  
   siteData.whyKarmel.title = document.getElementById('whyKarmelTitle').value;
   siteData.whyKarmel.subtitle = document.getElementById('whyKarmelSubtitle').value;
-
+  
   // تحديث بيانات البطاقات
   siteData.whyKarmel.cards = [];
   for (let i = 0; i < 4; i++) {
     siteData.whyKarmel.cards.push({
-      icon: document.getElementById(`whyKarmelIcon${i + 1}`).value,
-      title: document.getElementById(`whyKarmelCardTitle${i + 1}`).value,
-      desc: document.getElementById(`whyKarmelCardDesc${i + 1}`).value,
-      stat: document.getElementById(`whyKarmelStat${i + 1}`).value,
-      statText: document.getElementById(`whyKarmelStatText${i + 1}`).value
+      icon: document.getElementById(`whyKarmelIcon${i+1}`).value,
+      title: document.getElementById(`whyKarmelCardTitle${i+1}`).value,
+      desc: document.getElementById(`whyKarmelCardDesc${i+1}`).value,
+      stat: document.getElementById(`whyKarmelStat${i+1}`).value,
+      statText: document.getElementById(`whyKarmelStatText${i+1}`).value
     });
   }
-
+  
   saveSiteData();
   updateMainSiteContent('whyKarmel');
-
+  
   hideLoading();
   showSuccessMessage('تم تحديث قسم "لماذا كرمل+" بنجاح!');
 }
 
 function resetWhyKarmel() {
-  // استعادة البيانات الأصلية
-  if (restoreDefaultData('whyKarmel')) {
-    // إعادة تحميل البيانات في النموذج
-    loadWhyKarmelData();
-    showMessage('تم إعادة تعيين البيانات إلى القيم الأصلية', 'success');
-  } else {
-    showMessage('خطأ في إعادة تعيين البيانات', 'error');
-  }
+  loadWhyKarmelData();
+  showMessage('تم إعادة تعيين البيانات', 'warning');
 }
 
 // دوال قسم السياسات
@@ -1154,16 +1124,16 @@ function loadPoliciesData() {
     console.log('لا توجد بيانات لقسم السياسات');
     return;
   }
-
+  
   try {
     // تحميل بيانات سياسة الخصوصية
     if (siteData.policies.privacy) {
       const privacyElements = [
-        'privacyTitle', 'privacyIntro', 'privacyInfoCollected',
-        'privacyInfoUsage', 'privacyProtection', 'privacySharing',
+        'privacyTitle', 'privacyIntro', 'privacyInfoCollected', 
+        'privacyInfoUsage', 'privacyProtection', 'privacySharing', 
         'privacyRights', 'privacyUpdates'
       ];
-
+      
       privacyElements.forEach(elementId => {
         const element = document.getElementById(elementId);
         if (element && siteData.policies.privacy[elementId.replace('privacy', '').toLowerCase()]) {
@@ -1171,7 +1141,7 @@ function loadPoliciesData() {
         }
       });
     }
-
+    
     // تحميل بيانات الشروط والأحكام
     if (siteData.policies.terms) {
       const termsElements = [
@@ -1179,7 +1149,7 @@ function loadPoliciesData() {
         'termsPayments', 'termsIntellectual', 'termsConfidentiality',
         'termsLiability', 'termsTermination', 'termsLaw'
       ];
-
+      
       termsElements.forEach(elementId => {
         const element = document.getElementById(elementId);
         if (element && siteData.policies.terms[elementId.replace('terms', '').toLowerCase()]) {
@@ -1195,14 +1165,14 @@ function loadPoliciesData() {
 
 function updatePolicies() {
   showLoading();
-
+  
   if (!siteData.policies) {
     siteData.policies = {
       privacy: {},
       terms: {}
     };
   }
-
+  
   // تحديث بيانات سياسة الخصوصية
   siteData.policies.privacy = {
     title: document.getElementById('privacyTitle').value,
@@ -1214,7 +1184,7 @@ function updatePolicies() {
     rights: document.getElementById('privacyRights').value,
     updates: document.getElementById('privacyUpdates').value
   };
-
+  
   // تحديث بيانات الشروط والأحكام
   siteData.policies.terms = {
     title: document.getElementById('termsTitle').value,
@@ -1228,24 +1198,17 @@ function updatePolicies() {
     termination: document.getElementById('termsTermination').value,
     law: document.getElementById('termsLaw').value
   };
-
+  
   saveSiteData();
   updateMainSiteContent('policies');
-
+  
   hideLoading();
   showSuccessMessage('تم تحديث السياسات بنجاح!');
 }
 
-// إعادة تعيين قسم السياسات
 function resetPolicies() {
-  // استعادة البيانات الأصلية
-  if (restoreDefaultData('policies')) {
-    // إعادة تحميل البيانات في النموذج
-    loadPoliciesData();
-    showMessage('تم إعادة تعيين البيانات إلى القيم الأصلية', 'success');
-  } else {
-    showMessage('خطأ في إعادة تعيين البيانات', 'error');
-  }
+  loadPoliciesData();
+  showMessage('تم إعادة تعيين البيانات', 'warning');
 }
 
 // دالة إظهار تبويب السياسة
@@ -1254,20 +1217,68 @@ function showPolicyTab(tabName) {
   document.querySelectorAll('.policy-content').forEach(content => {
     content.classList.remove('active');
   });
-
+  
   // إزالة الفئة النشطة من جميع التبويبات
   document.querySelectorAll('.policy-tab').forEach(tab => {
     tab.classList.remove('active');
   });
-
+  
   // إظهار المحتوى المطلوب
   document.getElementById(`${tabName}-policy`).classList.add('active');
-
+  
   // إضافة الفئة النشطة للتبويب
   event.target.classList.add('active');
 }
 
+// تحديث دالة loadSiteData الأصلية لتشمل الأقسام الجديدة
+function loadSiteData() {
+  console.log('loadSiteData تم استدعاؤها');
+  const savedData = localStorage.getItem('karmelSiteData');
+  if (savedData) {
+    siteData = JSON.parse(savedData);
+    console.log('تم تحميل البيانات من localStorage');
+  } else {
+    console.log('لا توجد بيانات محفوظة، استخدام البيانات الافتراضية');
+  }
 
+  // مساعد لتعيين قيمة عنصر إذا كان موجوداً
+  const setValueIfExists = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.value = value;
+  };
+  const setSrcIfExists = (id, src) => {
+    const el = document.getElementById(id);
+    if (el) el.src = src;
+  };
+
+  // تحميل البيانات في النماذج بشكل آمن
+  setValueIfExists('heroTitle', siteData?.hero?.title ?? '');
+  setValueIfExists('heroDesc1', siteData?.hero?.desc1 ?? '');
+  setValueIfExists('heroDesc2', siteData?.hero?.desc2 ?? '');
+  setValueIfExists('heroButton', siteData?.hero?.button ?? '');
+  setSrcIfExists('heroImagePreview', siteData?.hero?.image ?? '');
+
+  setValueIfExists('aboutTitle', siteData?.about?.title ?? '');
+  setValueIfExists('aboutDesc', siteData?.about?.description ?? '');
+
+  setValueIfExists('missionText', siteData?.vision?.mission?.text ?? '');
+  setValueIfExists('missionIcon', siteData?.vision?.mission?.icon ?? '');
+  setValueIfExists('visionText', siteData?.vision?.vision?.text ?? '');
+  setValueIfExists('visionIcon', siteData?.vision?.vision?.icon ?? '');
+  setValueIfExists('valuesText', siteData?.vision?.values?.text ?? '');
+  setValueIfExists('valuesIcon', siteData?.vision?.values?.icon ?? '');
+
+  setValueIfExists('contactPhone', siteData?.contact?.phone ?? '');
+  setValueIfExists('contactEmail', siteData?.contact?.email ?? '');
+  setValueIfExists('contactAddress', siteData?.contact?.address ?? '');
+  setValueIfExists('contactMap', siteData?.contact?.map ?? '');
+
+  // تحميل بيانات الأقسام الجديدة (إن وُجدت عناصرها)
+  try { loadWhyKarmelData(); } catch (e) { console.warn('loadWhyKarmelData فشلت بشكل غير مؤثر:', e); }
+  try { loadPoliciesData(); } catch (e) { console.warn('loadPoliciesData فشلت بشكل غير مؤثر:', e); }
+
+  console.log('تم تحميل جميع البيانات في النماذج (بشكل آمن)');
+}
 
 // Icon Picker System
 let currentIconTarget = null;
@@ -1390,7 +1401,7 @@ const iconCategories = {
     { class: 'fas fa-upsilon', name: 'أبسيلون', category: 'business' },
     { class: 'fas fa-chi', name: 'تشي', category: 'business' },
     { class: 'fas fa-epsilon', name: 'إبسيلون', category: 'business' },
-
+    
     // أيقونات الإيموجي
     { class: '🎯', name: 'هدف', category: 'success' },
     { class: '🌟', name: 'نجمة متوهجة', category: 'success' },
@@ -1503,15 +1514,15 @@ iconCategories.emoji = iconCategories.all.filter(icon => !icon.class.startsWith(
 function openIconPicker(targetId) {
   currentIconTarget = targetId;
   selectedIconClass = document.getElementById(targetId).value;
-
+  
   // تحميل الأيقونات
   loadIcons('all');
-
+  
   // إظهار النافذة
   document.getElementById('iconPickerModal').style.display = 'block';
-
+  
   // إضافة مستمع للبحث
-  document.getElementById('iconSearch').addEventListener('input', function (e) {
+  document.getElementById('iconSearch').addEventListener('input', function(e) {
     searchIcons(e.target.value);
   });
 }
@@ -1527,38 +1538,38 @@ function closeIconPicker() {
 function loadIcons(category) {
   const iconsGrid = document.getElementById('iconsGrid');
   const icons = category === 'all' ? iconCategories.all : iconCategories[category];
-
+  
   iconsGrid.innerHTML = '';
-
+  
   icons.forEach(icon => {
     const iconItem = document.createElement('div');
     iconItem.className = 'icon-item';
     if (icon.class === selectedIconClass) {
       iconItem.classList.add('selected');
     }
-
+    
     // التحقق من نوع الأيقونة (FontAwesome أم إيموجي)
     const isEmoji = !icon.class.startsWith('fas ');
-
+    
     iconItem.innerHTML = `
       ${isEmoji ? `<span style="font-size: 2rem;">${icon.class}</span>` : `<i class="${icon.class}"></i>`}
       <span>${icon.name}</span>
     `;
-
-    iconItem.addEventListener('click', function () {
+    
+    iconItem.addEventListener('click', function() {
       // إزالة التحديد من جميع الأيقونات
       document.querySelectorAll('.icon-item').forEach(item => {
         item.classList.remove('selected');
       });
-
+      
       // تحديد الأيقونة المختارة
       this.classList.add('selected');
       selectedIconClass = icon.class;
     });
-
+    
     iconsGrid.appendChild(iconItem);
   });
-
+  
   // تحديث التبويبات النشطة
   document.querySelectorAll('.category-btn').forEach(btn => {
     btn.classList.remove('active');
@@ -1574,35 +1585,35 @@ function filterIcons(category) {
 // البحث في الأيقونات
 function searchIcons(query) {
   const iconsGrid = document.getElementById('iconsGrid');
-  const filteredIcons = iconCategories.all.filter(icon =>
+  const filteredIcons = iconCategories.all.filter(icon => 
     icon.name.includes(query) || icon.class.includes(query)
   );
-
+  
   iconsGrid.innerHTML = '';
-
+  
   filteredIcons.forEach(icon => {
     const iconItem = document.createElement('div');
     iconItem.className = 'icon-item';
     if (icon.class === selectedIconClass) {
       iconItem.classList.add('selected');
     }
-
+    
     // التحقق من نوع الأيقونة (FontAwesome أم إيموجي)
     const isEmoji = !icon.class.startsWith('fas ');
-
+    
     iconItem.innerHTML = `
       ${isEmoji ? `<span style="font-size: 2rem;">${icon.class}</span>` : `<i class="${icon.class}"></i>`}
       <span>${icon.name}</span>
     `;
-
-    iconItem.addEventListener('click', function () {
+    
+    iconItem.addEventListener('click', function() {
       document.querySelectorAll('.icon-item').forEach(item => {
         item.classList.remove('selected');
       });
       this.classList.add('selected');
       selectedIconClass = icon.class;
     });
-
+    
     iconsGrid.appendChild(iconItem);
   });
 }
@@ -1634,7 +1645,7 @@ function editPartner(index) {
   // إزالة أي حدث سابق
   addBtn.onclick = null;
   // عند الضغط على تحديث
-  addBtn.onclick = function () {
+  addBtn.onclick = function() {
     const name = document.getElementById('newPartnerName').value;
     const type = document.getElementById('newPartnerType').value;
     const imageFile = document.getElementById('newPartnerImage').files[0];
@@ -1644,7 +1655,7 @@ function editPartner(index) {
     }
     if (imageFile) {
       const reader = new FileReader();
-      reader.onload = function (e) {
+      reader.onload = function(e) {
         partner.name = name;
         partner.type = type;
         partner.image = e.target.result;
@@ -1680,9 +1691,9 @@ function loadFAQ() {
     console.error('عنصر faqGrid غير موجود');
     return;
   }
-
+  
   faqGrid.innerHTML = '';
-
+  
   siteData.faq.forEach((faq, index) => {
     const faqCard = document.createElement('div');
     faqCard.className = 'faq-card';
@@ -1699,7 +1710,6 @@ function loadFAQ() {
         </div>
       </div>
       <div class="faq-content">
-        <p>${faq.answer}</p>
         <span class="faq-category">${getCategoryName(faq.category)}</span>
       </div>
     `;
@@ -1717,25 +1727,31 @@ function addFAQ() {
   const question = document.getElementById('newFAQQuestion').value.trim();
   const answer = document.getElementById('newFAQAnswer').value.trim();
   const category = document.getElementById('newFAQCategory').value;
-
+  
   if (!question || !answer) {
     showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
     return;
   }
-
+  
   const newFAQ = { question, answer, category };
   siteData.faq.push(newFAQ);
-
+  
+  saveSiteData();
   closeModal('addFAQModal');
   loadFAQ();
   updateStats();
+  updateMainSiteContent('faq');
   showMessage('تم إضافة السؤال بنجاح', 'success');
 }
 
 function editFAQ(index) {
   const faq = siteData.faq[index];
-  // يمكن إضافة نافذة تعديل هنا
-  showMessage('ميزة التعديل قيد التطوير', 'info');
+  if (!faq) return;
+  document.getElementById('editFAQIndex').value = index;
+  document.getElementById('editFAQQuestion').value = faq.question;
+  document.getElementById('editFAQAnswer').value = faq.answer;
+  document.getElementById('editFAQCategory').value = faq.category;
+  document.getElementById('editFAQModal').style.display = 'block';
 }
 
 function deleteFAQ(index) {
@@ -1743,8 +1759,28 @@ function deleteFAQ(index) {
     siteData.faq.splice(index, 1);
     loadFAQ();
     updateStats();
+    saveSiteData();
+    updateMainSiteContent('faq');
     showMessage('تم حذف السؤال بنجاح', 'success');
   }
+}
+
+function updateFAQ() {
+  const index = parseInt(document.getElementById('editFAQIndex').value);
+  const question = document.getElementById('editFAQQuestion').value.trim();
+  const answer = document.getElementById('editFAQAnswer').value.trim();
+  const category = document.getElementById('editFAQCategory').value;
+  if (!question || !answer) {
+    showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
+    return;
+  }
+  siteData.faq[index] = { question, answer, category };
+  saveSiteData();
+  loadFAQ();
+  updateStats();
+  updateMainSiteContent('faq');
+  closeModal('editFAQModal');
+  showMessage('تم تحديث السؤال بنجاح', 'success');
 }
 
 // إدارة التقنيات المستقبلية
@@ -1755,9 +1791,9 @@ function loadFutureTech() {
     console.error('عنصر techGrid غير موجود');
     return;
   }
-
+  
   techGrid.innerHTML = '';
-
+  
   siteData.futureTech.forEach((tech, index) => {
     const techCard = document.createElement('div');
     techCard.className = 'tech-card';
@@ -1766,6 +1802,7 @@ function loadFutureTech() {
       <div class="tech-content">
         <h4>${tech.name}</h4>
         <p>${tech.description}</p>
+        ${tech.tags && tech.tags.length ? `<div class="tech-tags">${tech.tags.map(t => `<span class='feature-tag'>${t}</span>`).join('')}</div>` : ''}
       </div>
       <div class="tech-actions">
         <button class="btn btn-sm btn-secondary" onclick="editTech(${index})">
@@ -1790,25 +1827,40 @@ function addTechnology() {
   const name = document.getElementById('newTechName').value.trim();
   const description = document.getElementById('newTechDescription').value.trim();
   const icon = document.getElementById('newTechIcon').value.trim();
-
+  const tagsInput = document.getElementById('newTechTags') ? document.getElementById('newTechTags').value : '';
+  const tags = tagsInput
+    .split(',')
+    .map(t => t.trim())
+    .filter(t => t.length > 0);
+  
   if (!name || !description || !icon) {
     showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
     return;
   }
-
-  const newTech = { name, description, icon, image: '' };
+  
+  const newTech = { name, description, icon, tags, image: '' };
   siteData.futureTech.push(newTech);
-
+  
   closeModal('addTechModal');
   loadFutureTech();
   updateStats();
+  saveSiteData();
+  updateMainSiteContent('future-tech');
   showMessage('تم إضافة التقنية بنجاح', 'success');
 }
 
 function editTech(index) {
   const tech = siteData.futureTech[index];
-  // يمكن إضافة نافذة تعديل هنا
-  showMessage('ميزة التعديل قيد التطوير', 'info');
+  if (!tech) return;
+  document.getElementById('editTechIndex').value = index;
+  document.getElementById('editTechName').value = tech.name;
+  document.getElementById('editTechDescription').value = tech.description;
+  document.getElementById('editTechIcon').value = tech.icon;
+  const editTagsEl = document.getElementById('editTechTags');
+  if (editTagsEl) {
+    editTagsEl.value = (tech.tags || []).join(', ');
+  }
+  document.getElementById('editTechModal').style.display = 'block';
 }
 
 function deleteTech(index) {
@@ -1816,8 +1868,33 @@ function deleteTech(index) {
     siteData.futureTech.splice(index, 1);
     loadFutureTech();
     updateStats();
+    saveSiteData();
+    updateMainSiteContent('future-tech');
     showMessage('تم حذف التقنية بنجاح', 'success');
   }
+}
+
+function updateTech() {
+  const index = parseInt(document.getElementById('editTechIndex').value);
+  const name = document.getElementById('editTechName').value.trim();
+  const description = document.getElementById('editTechDescription').value.trim();
+  const icon = document.getElementById('editTechIcon').value.trim();
+  const tagsInput = document.getElementById('editTechTags') ? document.getElementById('editTechTags').value : '';
+  const tags = tagsInput
+    .split(',')
+    .map(t => t.trim())
+    .filter(t => t.length > 0);
+  if (!name || !description || !icon) {
+    showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
+    return;
+  }
+  siteData.futureTech[index] = { name, description, icon, tags, image: siteData.futureTech[index].image || '' };
+  saveSiteData();
+  loadFutureTech();
+  updateStats();
+  updateMainSiteContent('future-tech');
+  closeModal('editTechModal');
+  showMessage('تم تحديث التقنية بنجاح', 'success');
 }
 
 // إدارة المدونة
@@ -1828,16 +1905,15 @@ function loadBlog() {
     console.error('عنصر blogGrid غير موجود');
     return;
   }
-
+  
   blogGrid.innerHTML = '';
-
+  
   siteData.blog.forEach((post, index) => {
     const blogCard = document.createElement('div');
     blogCard.className = 'blog-card';
     blogCard.innerHTML = `
       <div class="blog-image">
-        
-        <img src="${post.image}" alt="${post.title}">
+        <img src="${post.image}" alt="${post.title}" onerror="this.src='../default-blog.jpg'">
       </div>
       <div class="blog-content">
         <h4>${post.title}</h4>
@@ -1873,25 +1949,33 @@ function addBlog() {
   const content = document.getElementById('newBlogContent').value.trim();
   const category = document.getElementById('newBlogCategory').value;
   const date = document.getElementById('newBlogDate').value;
-
+  
   if (!title || !excerpt || !content || !category || !date) {
     showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
     return;
   }
-
+  
   const newPost = { title, excerpt, content, category, date, image: '' };
   siteData.blog.push(newPost);
-
+  
   closeModal('addBlogModal');
   loadBlog();
   updateStats();
+  saveSiteData();
+  updateMainSiteContent('blog');
   showMessage('تم إضافة المقال بنجاح', 'success');
 }
 
 function editBlog(index) {
   const post = siteData.blog[index];
-  // يمكن إضافة نافذة تعديل هنا
-  showMessage('ميزة التعديل قيد التطوير', 'info');
+  if (!post) return;
+  document.getElementById('editBlogIndex').value = index;
+  document.getElementById('editBlogTitle').value = post.title;
+  document.getElementById('editBlogExcerpt').value = post.excerpt;
+  document.getElementById('editBlogContent').value = post.content;
+  document.getElementById('editBlogCategory').value = post.category;
+  document.getElementById('editBlogDate').value = post.date;
+  document.getElementById('editBlogModal').style.display = 'block';
 }
 
 function deleteBlog(index) {
@@ -1899,8 +1983,30 @@ function deleteBlog(index) {
     siteData.blog.splice(index, 1);
     loadBlog();
     updateStats();
+    saveSiteData();
+    updateMainSiteContent('blog');
     showMessage('تم حذف المقال بنجاح', 'success');
   }
+}
+
+function updateBlog() {
+  const index = parseInt(document.getElementById('editBlogIndex').value);
+  const title = document.getElementById('editBlogTitle').value.trim();
+  const excerpt = document.getElementById('editBlogExcerpt').value.trim();
+  const content = document.getElementById('editBlogContent').value.trim();
+  const category = document.getElementById('editBlogCategory').value;
+  const date = document.getElementById('editBlogDate').value;
+  if (!title || !excerpt || !content || !category || !date) {
+    showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
+    return;
+  }
+  siteData.blog[index] = { title, excerpt, content, category, date, image: siteData.blog[index].image || '' };
+  saveSiteData();
+  loadBlog();
+  updateStats();
+  updateMainSiteContent('blog');
+  closeModal('editBlogModal');
+  showMessage('تم تحديث المقال بنجاح', 'success');
 }
 
 // إدارة آراء العملاء
@@ -1911,9 +2017,9 @@ function loadFeedback() {
     console.error('عنصر feedbackGrid غير موجود');
     return;
   }
-
+  
   feedbackGrid.innerHTML = '';
-
+  
   siteData.feedback.forEach((feedback, index) => {
     const feedbackCard = document.createElement('div');
     feedbackCard.className = 'feedback-card';
@@ -1949,15 +2055,15 @@ function addFeedback() {
   const name = document.getElementById('newFeedbackName').value.trim();
   const company = document.getElementById('newFeedbackCompany').value.trim();
   const text = document.getElementById('newFeedbackText').value.trim();
-
+  
   if (!name || !company || !text) {
     showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
     return;
   }
-
+  
   const newFeedback = { name, company, text, image: '' };
   siteData.feedback.push(newFeedback);
-
+  
   closeModal('addFeedbackModal');
   loadFeedback();
   updateStats();
@@ -2010,7 +2116,7 @@ function updateStats() {
       'techCount': siteData.futureTech.length,
       'blogCount': siteData.blog.length
     };
-
+    
     Object.keys(elements).forEach(elementId => {
       const element = document.getElementById(elementId);
       if (element) {
@@ -2019,88 +2125,72 @@ function updateStats() {
         console.warn(`عنصر ${elementId} غير موجود`);
       }
     });
-
+    
     // إضافة فحص لـ feedbackCount إذا كان موجوداً
     const feedbackCountElement = document.getElementById('feedbackCount');
     if (feedbackCountElement) {
       feedbackCountElement.textContent = siteData.feedback.length;
     }
-
+    
     console.log('تم تحديث الإحصائيات');
   } catch (error) {
     console.error('خطأ في تحديث الإحصائيات:', error);
   }
 }
 
-// إعادة تعيين قسم الشركاء
-function resetPartners() {
-  // استعادة البيانات الأصلية
-  if (restoreDefaultData('partners')) {
-    // إعادة تحميل البيانات في النموذج
-    loadPartners();
-    showMessage('تم إعادة تعيين البيانات إلى القيم الأصلية', 'success');
+// دالة اختبار التنقل
+function testNavigation() {
+  console.log('=== اختبار التنقل ===');
+  
+  // اختبار وجود جميع الأقسام
+  const sections = ['overview', 'hero', 'about', 'partners', 'services', 'faq', 'future-tech', 'blog', 'policies', 'contact'];
+  sections.forEach(sectionId => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      console.log(`✅ القسم ${sectionId} موجود`);
+      if (section.classList.contains('dashboard-section')) {
+        console.log(`✅ القسم ${sectionId} يحتوي على class dashboard-section`);
+      } else {
+        console.log(`❌ القسم ${sectionId} لا يحتوي على class dashboard-section`);
+      }
+    } else {
+      console.log(`❌ القسم ${sectionId} غير موجود`);
+    }
+  });
+  
+  // اختبار وجود جميع روابط التنقل
+  const navLinks = document.querySelectorAll('.nav-link');
+  console.log(`تم العثور على ${navLinks.length} رابط تنقل`);
+  
+  navLinks.forEach((link, index) => {
+    const sectionId = link.getAttribute('data-section');
+    console.log(`رابط ${index + 1}: ${sectionId}`);
+    
+    // اختبار النقر على الرابط
+    link.addEventListener('click', function(e) {
+      console.log(`تم النقر على رابط: ${sectionId}`);
+    });
+  });
+  
+  // اختبار دالة showSection
+  console.log('اختبار دالة showSection...');
+  showSection('overview');
+  
+  console.log('=== انتهى اختبار التنقل ===');
+}
+
+// دالة تعيين حالة تسجيل الدخول للاختبار
+function setLoginStatus(status = true) {
+  if (status) {
+    sessionStorage.setItem('adminLoggedIn', 'true');
+    console.log('تم تعيين حالة تسجيل الدخول إلى: true');
   } else {
-    showMessage('خطأ في إعادة تعيين البيانات', 'error');
+    sessionStorage.removeItem('adminLoggedIn');
+    console.log('تم إزالة حالة تسجيل الدخول');
   }
 }
 
-// إعادة تعيين قسم الخدمات
-function resetServices() {
-  // استعادة البيانات الأصلية
-  if (restoreDefaultData('services')) {
-    // إعادة تحميل البيانات في النموذج
-    loadServices();
-    showMessage('تم إعادة تعيين البيانات إلى القيم الأصلية', 'success');
-  } else {
-    showMessage('خطأ في إعادة تعيين البيانات', 'error');
-  }
-}
-
-// إعادة تعيين قسم الأسئلة الشائعة
-function resetFAQ() {
-  // استعادة البيانات الأصلية
-  if (restoreDefaultData('faq')) {
-    // إعادة تحميل البيانات في النموذج
-    loadFAQ();
-    showMessage('تم إعادة تعيين البيانات إلى القيم الأصلية', 'success');
-  } else {
-    showMessage('خطأ في إعادة تعيين البيانات', 'error');
-  }
-}
-
-// إعادة تعيين قسم التقنيات المستقبلية
-function resetFutureTech() {
-  // استعادة البيانات الأصلية
-  if (restoreDefaultData('futureTech')) {
-    // إعادة تحميل البيانات في النموذج
-    loadFutureTech();
-    showMessage('تم إعادة تعيين البيانات إلى القيم الأصلية', 'success');
-  } else {
-    showMessage('خطأ في إعادة تعيين البيانات', 'error');
-  }
-}
-
-// إعادة تعيين قسم المدونة
-function resetBlog() {
-  // استعادة البيانات الأصلية
-  if (restoreDefaultData('blog')) {
-    // إعادة تحميل البيانات في النموذج
-    loadBlog();
-    showMessage('تم إعادة تعيين البيانات إلى القيم الأصلية', 'success');
-  } else {
-    showMessage('خطأ في إعادة تعيين البيانات', 'error');
-  }
-}
-
-// إعادة تعيين قسم التقييمات
-function resetFeedback() {
-  // استعادة البيانات الأصلية
-  if (restoreDefaultData('feedback')) {
-    // إعادة تحميل البيانات في النموذج
-    loadFeedback();
-    showMessage('تم إعادة تعيين البيانات إلى القيم الأصلية', 'success');
-  } else {
-    showMessage('خطأ في إعادة تعيين البيانات', 'error');
-  }
-}
+// إضافة الدوال إلى النافذة
+window.testNavigation = testNavigation;
+window.setLoginStatus = setLoginStatus;
 
