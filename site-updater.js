@@ -11,19 +11,24 @@ class SiteUpdater {
   // تهيئة النظام
   init() {
     console.log('SiteUpdater: بدء التهيئة...');
+    console.log('SiteUpdater: الصفحة الحالية:', window.location.href);
+    
     this.loadSiteData();
     this.setupUpdateListener();
     this.updateAllSections();
+    
     console.log('SiteUpdater: تمت التهيئة بنجاح');
+    console.log('SiteUpdater: البيانات المحملة:', this.siteData);
   }
 
   // تحميل بيانات الموقع من localStorage
   loadSiteData() {
     try {
+      console.log('SiteUpdater: محاولة تحميل البيانات من localStorage...');
       const savedData = localStorage.getItem('karmelSiteData');
       if (savedData) {
         this.siteData = JSON.parse(savedData);
-        console.log('SiteUpdater: تم تحميل البيانات من localStorage');
+        console.log('SiteUpdater: تم تحميل البيانات من localStorage:', this.siteData);
       } else {
         console.log('SiteUpdater: لا توجد بيانات محفوظة، استخدام البيانات الافتراضية');
         this.siteData = this.getDefaultData();
@@ -36,10 +41,12 @@ class SiteUpdater {
 
   // إعداد مستمع التحديثات
   setupUpdateListener() {
+    console.log('SiteUpdater: إعداد مستمع التحديثات...');
+    
     // مراقبة التغييرات في localStorage
     window.addEventListener('storage', (e) => {
       if (e.key === 'karmelSiteData' || e.key === 'forceUpdate') {
-        console.log('SiteUpdater: تم اكتشاف تحديث جديد');
+        console.log('SiteUpdater: تم اكتشاف تحديث جديد في localStorage:', e.key);
         this.loadSiteData();
         this.updateAllSections();
       }
@@ -49,12 +56,14 @@ class SiteUpdater {
     this.updateInterval = setInterval(() => {
       const forceUpdate = localStorage.getItem('forceUpdate');
       if (forceUpdate) {
-        console.log('SiteUpdater: تم اكتشاف طلب تحديث إجباري');
+        console.log('SiteUpdater: تم اكتشاف طلب تحديث إجباري:', forceUpdate);
         localStorage.removeItem('forceUpdate');
         this.loadSiteData();
         this.updateAllSections();
       }
     }, 2000);
+    
+    console.log('SiteUpdater: تم إعداد مستمع التحديثات بنجاح');
   }
 
   // تحديث جميع الأقسام
@@ -64,6 +73,9 @@ class SiteUpdater {
     this.updateAboutSection();
     this.updatePartnersSection();
     this.updateServicesSection();
+    this.updateFAQSection();
+    this.updateFutureTechSection();
+    this.updateBlogSection();
     this.updateContactSection();
     this.updateVisionSection();
     this.updateWhyKarmelSection();
@@ -132,44 +144,208 @@ class SiteUpdater {
   updatePartnersSection() {
     if (!this.siteData?.partners) return;
     
-    const partnersContainer = document.querySelector('.partners-grid, .partners-list');
+    const partnersContainer = document.querySelector('.partners-grid, .partners-magical-grid');
     if (!partnersContainer) return;
 
-    partnersContainer.innerHTML = '';
-    
-    this.siteData.partners.forEach(partner => {
-      const partnerElement = document.createElement('div');
-      partnerElement.className = 'partner-item';
-      partnerElement.innerHTML = `
-        <img src="${partner.image}" alt="${partner.name}" class="partner-logo">
-        <div class="partner-info">
-          <h4>${partner.name}</h4>
-          <p>${partner.type}</p>
-        </div>
-      `;
-      partnersContainer.appendChild(partnerElement);
+    // حفظ البنية الأساسية للبطاقات
+    const originalCards = partnersContainer.querySelectorAll('.partner-card');
+    if (originalCards.length === 0) return;
+
+    // تحديث البطاقات الموجودة
+    this.siteData.partners.forEach((partner, index) => {
+      if (index < originalCards.length) {
+        const card = originalCards[index];
+        const logo = card.querySelector('.partner-logo');
+        const name = card.querySelector('.partner-name');
+        const type = card.querySelector('.partner-type');
+        
+        if (logo) logo.src = partner.image;
+        if (name) name.textContent = partner.name;
+        if (type) type.textContent = partner.type;
+      }
     });
 
     console.log('SiteUpdater: تم تحديث قسم الشركاء');
+  }
+
+  // تحديث قسم الأسئلة الشائعة على الموقع الأساسي
+  updateFAQSection() {
+    console.log('SiteUpdater: بدء تحديث قسم FAQ...');
+    console.log('SiteUpdater: البيانات المتوفرة:', this.siteData?.faq);
+    
+    if (!this.siteData?.faq) {
+      console.log('SiteUpdater: لا توجد بيانات FAQ');
+      return;
+    }
+    
+    const faqContainer = document.querySelector('#faq .faq-grid');
+    if (!faqContainer) {
+      console.error('SiteUpdater: لم يتم العثور على حاوية FAQ');
+      return;
+    }
+    
+    console.log('SiteUpdater: تم العثور على حاوية FAQ:', faqContainer);
+
+    const existingItems = Array.from(faqContainer.querySelectorAll('.faq-item'));
+
+    // حدّث العناصر الموجودة أو أنشئ عناصر جديدة إذا لزم
+    this.siteData.faq.forEach((faq, index) => {
+      let item;
+      if (index < existingItems.length) {
+        item = existingItems[index];
+      } else {
+        // إنشاء عنصر جديد عبر الاستنساخ للحفاظ على البنية والأنماط
+        if (existingItems.length > 0) {
+          item = existingItems[0].cloneNode(true);
+          item.classList.remove('active');
+          const answerEl = item.querySelector('.faq-answer');
+          if (answerEl) answerEl.style.maxHeight = '0';
+        } else {
+          // في حال عدم وجود عناصر، أنشئ بنية أساسية
+          item = document.createElement('div');
+          item.className = 'faq-item';
+          item.innerHTML = `
+            <div class="faq-question">
+              <h3><span class="ar"></span><span class="en" style="display:none;"></span></h3>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer"><p><span class="ar"></span><span class="en" style="display:none;"></span></p></div>
+          `;
+        }
+        faqContainer.appendChild(item);
+
+        // أضف مستمع النقر للتبديل
+        const question = item.querySelector('.faq-question');
+        const answer = item.querySelector('.faq-answer');
+        if (question && answer) {
+          question.onclick = () => {
+            const isActive = item.classList.contains('active');
+            // أغلق الباقي
+            faqContainer.querySelectorAll('.faq-item').forEach(other => {
+              if (other !== item) {
+                other.classList.remove('active');
+                const otherAns = other.querySelector('.faq-answer');
+                if (otherAns) otherAns.style.maxHeight = '0';
+              }
+            });
+            if (isActive) {
+              item.classList.remove('active');
+              answer.style.maxHeight = '0';
+            } else {
+              item.classList.add('active');
+              answer.style.maxHeight = answer.scrollHeight + 'px';
+            }
+          };
+        }
+        existingItems.push(item);
+      }
+
+      const qEl = item.querySelector('.faq-question h3 .ar');
+      const aEl = item.querySelector('.faq-answer p .ar');
+      if (qEl) qEl.textContent = faq.question;
+      if (aEl) aEl.textContent = faq.answer;
+    });
+
+    // إزالة العناصر الزائدة إن وجدت
+    const totalNeeded = this.siteData.faq.length;
+    const currentItems = faqContainer.querySelectorAll('.faq-item');
+    if (currentItems.length > totalNeeded) {
+      for (let i = currentItems.length - 1; i >= totalNeeded; i--) {
+        currentItems[i].remove();
+      }
+    }
+
+    console.log('SiteUpdater: تم تحديث قسم الأسئلة الشائعة (مع إنشاء/إزالة العناصر حسب الحاجة)');
+    console.log('SiteUpdater: عدد العناصر النهائي:', faqContainer.querySelectorAll('.faq-item').length);
+  }
+
+  // تحديث قسم التقنيات المستقبلية على الموقع الأساسي
+  updateFutureTechSection() {
+    if (!this.siteData?.futureTech) return;
+    const grid = document.querySelector('#future-tech .future-tech-grid');
+    if (!grid) return;
+
+    const cards = grid.querySelectorAll('.future-tech-card');
+    this.siteData.futureTech.forEach((tech, index) => {
+      if (index < cards.length) {
+        const card = cards[index];
+        const title = card.querySelector('.future-tech-title .ar');
+        const desc = card.querySelector('.future-tech-desc .ar');
+        const iconEl = card.querySelector('.future-tech-icon i');
+        const tagsContainer = card.querySelector('.future-tech-features');
+        if (title) title.textContent = tech.name;
+        if (desc) desc.textContent = tech.description;
+        if (iconEl && tech.icon) {
+          const looksLikeFa = tech.icon.includes('fa-') || tech.icon.startsWith('fas ') || tech.icon.startsWith('far ') || tech.icon.startsWith('fab ');
+          if (looksLikeFa) {
+            iconEl.textContent = '';
+            iconEl.className = tech.icon;
+          } else {
+            iconEl.className = '';
+            iconEl.textContent = tech.icon;
+          }
+        }
+        if (tagsContainer) {
+          tagsContainer.innerHTML = '';
+          (tech.tags || []).forEach(tag => {
+            const span = document.createElement('span');
+            span.className = 'feature-tag';
+            span.textContent = tag;
+            tagsContainer.appendChild(span);
+          });
+        }
+      }
+    });
+    console.log('SiteUpdater: تم تحديث قسم التقنيات المستقبلية');
+  }
+
+  // تحديث قسم المدونة والأخبار على الموقع الأساسي
+  updateBlogSection() {
+    if (!this.siteData?.blog) return;
+    const grid = document.querySelector('#blog .blog-grid');
+    if (!grid) return;
+
+    const posts = grid.querySelectorAll('.blog-card');
+    const formatDate = (dateString) => new Date(dateString).toLocaleDateString('ar-SA');
+    const getCategoryName = (key) => {
+      const map = { technology: 'تقنية', business: 'أعمال', development: 'تطوير', news: 'أخبار' };
+      return map[key] || key;
+    };
+
+    this.siteData.blog.forEach((post, index) => {
+      if (index < posts.length) {
+        const card = posts[index];
+        const title = card.querySelector('.blog-title .ar');
+        const excerpt = card.querySelector('.blog-excerpt .ar');
+        const category = card.querySelector('.blog-category');
+        const date = card.querySelector('.blog-date');
+        if (title) title.textContent = post.title;
+        if (excerpt) excerpt.textContent = post.excerpt;
+        if (category) category.textContent = getCategoryName(post.category);
+        if (date) date.textContent = formatDate(post.date);
+      }
+    });
+    console.log('SiteUpdater: تم تحديث قسم المدونة');
   }
 
   // تحديث قسم الخدمات
   updateServicesSection() {
     if (!this.siteData?.services) return;
     
-    const servicesContainer = document.querySelector('.services-grid, .services-list');
+    const servicesContainer = document.querySelector('.services-grid, .services-modern-list');
     if (!servicesContainer) return;
 
-    servicesContainer.innerHTML = '';
-    
-    this.siteData.services.forEach(service => {
-      const serviceElement = document.createElement('div');
-      serviceElement.className = 'service-item';
-      serviceElement.innerHTML = `
-        <div class="service-icon">${service.icon}</div>
-        <h4>${service.name}</h4>
-      `;
-      servicesContainer.appendChild(serviceElement);
+    // تحديث الخدمات الموجودة
+    const serviceItems = servicesContainer.querySelectorAll('.service-modern-item');
+    this.siteData.services.forEach((service, index) => {
+      if (index < serviceItems.length) {
+        const item = serviceItems[index];
+        const icon = item.querySelector('.service-modern-circle span');
+        const label = item.querySelector('.service-modern-label');
+        
+        if (icon) icon.textContent = service.icon;
+        if (label) label.textContent = service.name;
+      }
     });
 
     console.log('SiteUpdater: تم تحديث قسم الخدمات');
@@ -182,16 +358,13 @@ class SiteUpdater {
     const contact = this.siteData.contact;
     
     // تحديث رقم الهاتف
-    const phoneElements = document.querySelectorAll('.contact-phone, .phone-number');
+    const phoneElements = document.querySelectorAll('.contact-phone');
     phoneElements.forEach(element => {
       element.textContent = contact.phone;
-      if (element.tagName === 'A') {
-        element.href = `tel:${contact.phone}`;
-      }
     });
 
     // تحديث البريد الإلكتروني
-    const emailElements = document.querySelectorAll('.contact-email, .email-address');
+    const emailElements = document.querySelectorAll('.contact-email');
     emailElements.forEach(element => {
       element.textContent = contact.email;
       if (element.tagName === 'A') {
@@ -200,13 +373,13 @@ class SiteUpdater {
     });
 
     // تحديث العنوان
-    const addressElements = document.querySelectorAll('.contact-address, .address');
+    const addressElements = document.querySelectorAll('.contact-address');
     addressElements.forEach(element => {
       element.textContent = contact.address;
     });
 
     // تحديث الخريطة
-    const mapFrame = document.querySelector('.contact-map iframe');
+    const mapFrame = document.querySelector('.contact-map-iframe');
     if (mapFrame && contact.map) {
       mapFrame.src = contact.map;
     }
@@ -220,23 +393,31 @@ class SiteUpdater {
     
     const vision = this.siteData.vision;
     
-    // تحديث المهمة
-    const missionElements = document.querySelectorAll('.mission-text, .mission-content');
-    missionElements.forEach(element => {
-      element.innerHTML = `<span class="mission-icon">${vision.mission.icon}</span> ${vision.mission.text}`;
-    });
+    // البحث عن عناصر الرؤية والمهمة في الصفحة
+    const missionElements = document.querySelectorAll('[class*="mission"]');
+    const visionElements = document.querySelectorAll('[class*="vision"]');
+    const valuesElements = document.querySelectorAll('[class*="values"]');
 
-    // تحديث الرؤية
-    const visionElements = document.querySelectorAll('.vision-text, .vision-content');
-    visionElements.forEach(element => {
-      element.innerHTML = `<span class="vision-icon">${vision.vision.icon}</span> ${vision.vision.text}`;
-    });
+    // تحديث المهمة إذا وجدت
+    if (missionElements.length > 0) {
+      missionElements.forEach(element => {
+        element.innerHTML = `<span class="mission-icon">${vision.mission.icon}</span> ${vision.mission.text}`;
+      });
+    }
 
-    // تحديث القيم
-    const valuesElements = document.querySelectorAll('.values-text, .values-content');
-    valuesElements.forEach(element => {
-      element.innerHTML = `<span class="values-icon">${vision.values.icon}</span> ${vision.values.text}`;
-    });
+    // تحديث الرؤية إذا وجدت
+    if (visionElements.length > 0) {
+      visionElements.forEach(element => {
+        element.innerHTML = `<span class="vision-icon">${vision.vision.icon}</span> ${vision.vision.text}`;
+      });
+    }
+
+    // تحديث القيم إذا وجدت
+    if (valuesElements.length > 0) {
+      valuesElements.forEach(element => {
+        element.innerHTML = `<span class="values-icon">${vision.values.icon}</span> ${vision.values.text}`;
+      });
+    }
 
     console.log('SiteUpdater: تم تحديث قسم الرؤية والمهمة');
   }
@@ -248,32 +429,32 @@ class SiteUpdater {
     const whyKarmel = this.siteData.whyKarmel;
     
     // تحديث العنوان والعنوان الفرعي
-    const titleElement = document.querySelector('.why-karmel-title');
-    const subtitleElement = document.querySelector('.why-karmel-subtitle');
+    const titleElement = document.querySelector('.why-karmel-section .section-title-main .ar');
+    const subtitleElement = document.querySelector('.why-karmel-subtitle .ar');
     
     if (titleElement) titleElement.textContent = whyKarmel.title;
     if (subtitleElement) subtitleElement.textContent = whyKarmel.subtitle;
 
     // تحديث البطاقات
-    const cardsContainer = document.querySelector('.why-karmel-cards, .features-grid');
+    const cardsContainer = document.querySelector('.why-karmel-grid');
     if (cardsContainer && whyKarmel.cards) {
-      cardsContainer.innerHTML = '';
+      const existingCards = cardsContainer.querySelectorAll('.why-karmel-card');
       
-      whyKarmel.cards.forEach(card => {
-        const cardElement = document.createElement('div');
-        cardElement.className = 'why-karmel-card feature-card';
-        cardElement.innerHTML = `
-          <div class="card-icon">
-            <i class="${card.icon}"></i>
-          </div>
-          <h3>${card.title}</h3>
-          <p>${card.desc}</p>
-          <div class="card-stat">
-            <span class="stat-number">${card.stat}</span>
-            <span class="stat-text">${card.statText}</span>
-          </div>
-        `;
-        cardsContainer.appendChild(cardElement);
+      whyKarmel.cards.forEach((card, index) => {
+        if (index < existingCards.length) {
+          const cardElement = existingCards[index];
+          const icon = cardElement.querySelector('.why-karmel-icon i');
+          const title = cardElement.querySelector('.why-karmel-title .ar');
+          const desc = cardElement.querySelector('.why-karmel-desc .ar');
+          const statNumber = cardElement.querySelector('.stat-number');
+          const statLabel = cardElement.querySelector('.stat-label');
+          
+          if (icon) icon.className = card.icon;
+          if (title) title.textContent = card.title;
+          if (desc) desc.textContent = card.desc;
+          if (statNumber) statNumber.textContent = card.stat;
+          if (statLabel) statLabel.textContent = card.statText;
+        }
       });
     }
 

@@ -241,9 +241,14 @@ let siteData = {
 // التحقق من تسجيل الدخول
 function checkAuth() {
   console.log('checkAuth تم استدعاؤها');
+  
+  // للاختبار - يمكن تعطيل هذا السطر مؤقتاً
+  // return true;
+  
   const isLoggedIn = sessionStorage.getItem('adminLoggedIn');
   if (isLoggedIn !== 'true') {
     console.log('المستخدم غير مسجل دخول');
+    console.log('قيمة adminLoggedIn في sessionStorage:', isLoggedIn);
     return false;
   } else {
     console.log('المستخدم مسجل دخول بنجاح');
@@ -254,25 +259,60 @@ function checkAuth() {
 // تحميل البيانات عند بدء التطبيق
 function initializeDashboard() {
   console.log('initializeDashboard تم استدعاؤها');
+  
   if (!checkAuth()) {
+    console.log('فشل في التحقق من الهوية، إعادة التوجيه إلى صفحة تسجيل الدخول');
     window.location.href = 'login.html';
     return;
   }
   
-  loadSiteData();
-  loadPartners();
-  loadServices();
-  loadFAQ();
-  loadFutureTech();
-  loadBlog();
-  loadFeedback();
-  loadWhyKarmelData();
-  loadPoliciesData();
-  updateStats();
-  setupEventListeners();
+  console.log('تم التحقق من الهوية بنجاح، بدء تحميل البيانات...');
   
-  showSection('overview');
-  console.log('تم تهيئة الداشبورد بنجاح');
+  try {
+    loadSiteData();
+    console.log('تم تحميل بيانات الموقع');
+    
+    loadPartners();
+    console.log('تم تحميل الشركاء');
+    
+    loadServices();
+    console.log('تم تحميل الخدمات');
+    
+    loadFAQ();
+    console.log('تم تحميل الأسئلة الشائعة');
+    
+    loadFutureTech();
+    console.log('تم تحميل التقنيات المستقبلية');
+    
+    loadBlog();
+    console.log('تم تحميل المدونة');
+    
+    loadFeedback();
+    console.log('تم تحميل آراء العملاء');
+    
+    loadWhyKarmelData();
+    console.log('تم تحميل بيانات لماذا كرمل');
+    
+    loadPoliciesData();
+    console.log('تم تحميل بيانات السياسات');
+    
+    updateStats();
+    console.log('تم تحديث الإحصائيات');
+    
+    console.log('بدء إعداد مستمعي الأحداث...');
+    setupEventListeners();
+    
+    console.log('إظهار قسم النظرة العامة...');
+    showSection('overview');
+    
+    // اختبار التنقل
+    console.log('بدء اختبار التنقل...');
+    testNavigation();
+    
+    console.log('تم تهيئة الداشبورد بنجاح');
+  } catch (error) {
+    console.error('خطأ في تهيئة الداشبورد:', error);
+  }
 }
 
 // تحميل بيانات الموقع من localStorage أو استخدام البيانات الافتراضية
@@ -343,54 +383,15 @@ function saveSiteData() {
 function updateMainSiteContent(section = null) {
   console.log('updateMainSiteContent تم استدعاؤها مع القسم:', section);
   
-  if (window.siteUpdater) {
-    console.log('siteUpdater متاح');
-    if (section) {
-      // تحديث قسم محدد
-      console.log('تحديث قسم محدد:', section);
-      switch(section) {
-        case 'hero':
-          window.siteUpdater.updateHeroSection();
-          break;
-        case 'whyKarmel':
-          window.siteUpdater.updateWhyKarmelSection();
-          break;
-        case 'policies':
-          window.siteUpdater.updatePrivacyPolicy();
-          window.siteUpdater.updateTermsAndConditions();
-          break;
-        case 'services':
-          window.siteUpdater.updateServicesSection();
-          break;
-        case 'vision':
-          window.siteUpdater.updateVisionSection();
-          break;
-        case 'about':
-          console.log('استدعاء updateAboutSection...');
-          window.siteUpdater.updateAboutSection();
-          console.log('تم استدعاء updateAboutSection');
-          break;
-        case 'contact':
-          window.siteUpdater.updateContactSection();
-          break;
-        case 'partners':
-          window.siteUpdater.updatePartnersSection();
-          break;
-        default:
-          window.siteUpdater.updateAllSections();
-      }
-    } else {
-      // تحديث جميع الأقسام
-      console.log('تحديث جميع الأقسام');
-      window.siteUpdater.updateAllSections();
-    }
-  } else {
-    console.error('siteUpdater غير متاح!');
-  }
+  // حفظ البيانات في localStorage أولاً
+  saveSiteData();
   
   // إرسال إشعار للموقع الأساسي بالتحديث
   localStorage.setItem('forceUpdate', new Date().getTime().toString());
-  console.log('تم إرسال إشعار تحديث للموقع الأساسي');
+  console.log('تم إرسال إشعار تحديث للموقع الأساسي للمقسم:', section);
+  
+  // إظهار رسالة تأكيد للمستخدم
+  showNotification(`تم تحديث ${section || 'جميع الأقسام'} بنجاح`, 'success');
 }
 
 // دالة اختبار التحديث
@@ -476,35 +477,94 @@ function updateStats() {
 // إعداد مستمعي الأحداث
 function setupEventListeners() {
   console.log('setupEventListeners تم استدعاؤها');
+  
   // التنقل بين الأقسام
-  document.querySelectorAll('.nav-link').forEach(link => {
+  const navLinks = document.querySelectorAll('.nav-link');
+  console.log('تم العثور على روابط التنقل:', navLinks.length);
+  
+  navLinks.forEach((link, index) => {
+    const section = link.getAttribute('data-section');
+    console.log(`رابط ${index + 1}:`, section, link);
+    
     link.addEventListener('click', function(e) {
       e.preventDefault();
-      const section = this.getAttribute('data-section');
-      showSection(section);
+      console.log('تم النقر على رابط التنقل:', section);
+      const sectionId = this.getAttribute('data-section');
+      console.log('سيتم إظهار القسم:', sectionId);
+      showSection(sectionId);
     });
   });
   
-  // تسجيل الخروج
-  document.getElementById('logoutBtn').addEventListener('click', logout);
+  // إضافة مستمعي أحداث لروابط الصفحات الرئيسية
+  const pageLinks = document.querySelectorAll('.page-link');
+  console.log('تم العثور على روابط الصفحات الرئيسية:', pageLinks.length);
   
-  // معاينة الصور
-  document.getElementById('heroImage').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        document.getElementById('heroImagePreview').src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
+  pageLinks.forEach(link => {
+    link.addEventListener('click', function(e) {
+      console.log('تم النقر على رابط:', this.href);
+      // السماح للرابط بالعمل بشكل طبيعي
+      // لا نحتاج لمنع السلوك الافتراضي هنا
+    });
   });
   
+  // دالة فتح الصفحات
+  window.openPage = function(url) {
+    console.log('محاولة فتح الصفحة:', url);
+    try {
+      const newWindow = window.open(url, '_blank');
+      if (newWindow) {
+        console.log('تم فتح الصفحة بنجاح');
+      } else {
+        console.error('فشل في فتح الصفحة - قد يكون منع النوافذ المنبثقة مفعلاً');
+        // محاولة فتح في نفس النافذة إذا فشل فتح نافذة جديدة
+        window.location.href = url;
+      }
+    } catch (error) {
+      console.error('خطأ في فتح الصفحة:', error);
+      // محاولة فتح في نفس النافذة
+      window.location.href = url;
+    }
+  };
+  
+  // تسجيل الخروج
+  const logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', logout);
+    console.log('تم إعداد مستمع حدث تسجيل الخروج');
+  } else {
+    console.warn('لم يتم العثور على زر تسجيل الخروج');
+  }
+  
+  // معاينة الصور
+  const heroImage = document.getElementById('heroImage');
+  if (heroImage) {
+    heroImage.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const preview = document.getElementById('heroImagePreview');
+          if (preview) {
+            preview.src = e.target.result;
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+    console.log('تم إعداد مستمع حدث معاينة الصور');
+  }
+  
   // إغلاق النوافذ المنبثقة
-  document.querySelectorAll('.close').forEach(closeBtn => {
+  const closeButtons = document.querySelectorAll('.close');
+  console.log('تم العثور على أزرار الإغلاق:', closeButtons.length);
+  
+  closeButtons.forEach(closeBtn => {
     closeBtn.addEventListener('click', function() {
       const modal = this.closest('.modal');
-      modal.style.display = 'none';
+      if (modal) {
+        modal.style.display = 'none';
+        console.log('تم إغلاق النافذة المنبثقة');
+      }
     });
   });
   
@@ -512,6 +572,7 @@ function setupEventListeners() {
   window.addEventListener('click', function(e) {
     if (e.target.classList.contains('modal')) {
       e.target.style.display = 'none';
+      console.log('تم إغلاق النافذة المنبثقة بالنقر خارجها');
     }
   });
   
@@ -521,9 +582,18 @@ function setupEventListeners() {
 // إظهار قسم معين
 function showSection(sectionId) {
   console.log('showSection تم استدعاؤها مع القسم:', sectionId);
+  
+  // التحقق من وجود القسم
+  const targetSection = document.getElementById(sectionId);
+  if (!targetSection) {
+    console.error('القسم غير موجود:', sectionId);
+    return;
+  }
+  
   // إخفاء جميع الأقسام
   document.querySelectorAll('.dashboard-section').forEach(section => {
     section.classList.remove('active');
+    console.log('تم إزالة active من:', section.id);
   });
   
   // إزالة الفئة النشطة من جميع الروابط
@@ -532,10 +602,17 @@ function showSection(sectionId) {
   });
   
   // إظهار القسم المطلوب
-  document.getElementById(sectionId).classList.add('active');
+  targetSection.classList.add('active');
+  console.log('تم إضافة active إلى:', sectionId);
   
   // إضافة الفئة النشطة للرابط
-  document.querySelector(`[data-section="${sectionId}"]`).classList.add('active');
+  const activeLink = document.querySelector(`[data-section="${sectionId}"]`);
+  if (activeLink) {
+    activeLink.classList.add('active');
+    console.log('تم إضافة active للرابط:', sectionId);
+  } else {
+    console.warn('لم يتم العثور على الرابط للقسم:', sectionId);
+  }
   
   console.log('تم إظهار القسم:', sectionId);
 }
@@ -768,6 +845,8 @@ function loadServices() {
     grid.appendChild(card);
   });
   console.log('تم تحميل الخدمات:', siteData.services.length);
+  // مزامنة فورية مع الموقع الأساسي
+  updateMainSiteContent('services');
 }
 
 // إنشاء بطاقة خدمة
@@ -816,7 +895,7 @@ function deleteService(index) {
   if (confirm('هل أنت متأكد من حذف هذه الخدمة؟')) {
     siteData.services.splice(index, 1);
     saveSiteData();
-      updateMainSiteContent('services');
+    updateMainSiteContent('services');
     loadServices();
     updateStats();
     showMessage('تم حذف الخدمة بنجاح!', 'success');
@@ -1161,34 +1240,44 @@ function loadSiteData() {
   } else {
     console.log('لا توجد بيانات محفوظة، استخدام البيانات الافتراضية');
   }
-  
-  // تحميل البيانات في النماذج
-  document.getElementById('heroTitle').value = siteData.hero.title;
-  document.getElementById('heroDesc1').value = siteData.hero.desc1;
-  document.getElementById('heroDesc2').value = siteData.hero.desc2;
-  document.getElementById('heroButton').value = siteData.hero.button;
-  document.getElementById('heroImagePreview').src = siteData.hero.image;
-  
-  document.getElementById('aboutTitle').value = siteData.about.title;
-  document.getElementById('aboutDesc').value = siteData.about.description;
-  
-  document.getElementById('missionText').value = siteData.vision.mission.text;
-  document.getElementById('missionIcon').value = siteData.vision.mission.icon;
-  document.getElementById('visionText').value = siteData.vision.vision.text;
-  document.getElementById('visionIcon').value = siteData.vision.vision.icon;
-  document.getElementById('valuesText').value = siteData.vision.values.text;
-  document.getElementById('valuesIcon').value = siteData.vision.values.icon;
-  
-  document.getElementById('contactPhone').value = siteData.contact.phone;
-  document.getElementById('contactEmail').value = siteData.contact.email;
-  document.getElementById('contactAddress').value = siteData.contact.address;
-  document.getElementById('contactMap').value = siteData.contact.map;
-  
-  // تحميل بيانات الأقسام الجديدة
-  loadWhyKarmelData();
-  loadPoliciesData();
-  
-  console.log('تم تحميل جميع البيانات في النماذج');
+
+  // مساعد لتعيين قيمة عنصر إذا كان موجوداً
+  const setValueIfExists = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.value = value;
+  };
+  const setSrcIfExists = (id, src) => {
+    const el = document.getElementById(id);
+    if (el) el.src = src;
+  };
+
+  // تحميل البيانات في النماذج بشكل آمن
+  setValueIfExists('heroTitle', siteData?.hero?.title ?? '');
+  setValueIfExists('heroDesc1', siteData?.hero?.desc1 ?? '');
+  setValueIfExists('heroDesc2', siteData?.hero?.desc2 ?? '');
+  setValueIfExists('heroButton', siteData?.hero?.button ?? '');
+  setSrcIfExists('heroImagePreview', siteData?.hero?.image ?? '');
+
+  setValueIfExists('aboutTitle', siteData?.about?.title ?? '');
+  setValueIfExists('aboutDesc', siteData?.about?.description ?? '');
+
+  setValueIfExists('missionText', siteData?.vision?.mission?.text ?? '');
+  setValueIfExists('missionIcon', siteData?.vision?.mission?.icon ?? '');
+  setValueIfExists('visionText', siteData?.vision?.vision?.text ?? '');
+  setValueIfExists('visionIcon', siteData?.vision?.vision?.icon ?? '');
+  setValueIfExists('valuesText', siteData?.vision?.values?.text ?? '');
+  setValueIfExists('valuesIcon', siteData?.vision?.values?.icon ?? '');
+
+  setValueIfExists('contactPhone', siteData?.contact?.phone ?? '');
+  setValueIfExists('contactEmail', siteData?.contact?.email ?? '');
+  setValueIfExists('contactAddress', siteData?.contact?.address ?? '');
+  setValueIfExists('contactMap', siteData?.contact?.map ?? '');
+
+  // تحميل بيانات الأقسام الجديدة (إن وُجدت عناصرها)
+  try { loadWhyKarmelData(); } catch (e) { console.warn('loadWhyKarmelData فشلت بشكل غير مؤثر:', e); }
+  try { loadPoliciesData(); } catch (e) { console.warn('loadPoliciesData فشلت بشكل غير مؤثر:', e); }
+
+  console.log('تم تحميل جميع البيانات في النماذج (بشكل آمن)');
 }
 
 // Icon Picker System
@@ -1621,7 +1710,6 @@ function loadFAQ() {
         </div>
       </div>
       <div class="faq-content">
-        <p>${faq.answer}</p>
         <span class="faq-category">${getCategoryName(faq.category)}</span>
       </div>
     `;
@@ -1648,16 +1736,22 @@ function addFAQ() {
   const newFAQ = { question, answer, category };
   siteData.faq.push(newFAQ);
   
+  saveSiteData();
   closeModal('addFAQModal');
   loadFAQ();
   updateStats();
+  updateMainSiteContent('faq');
   showMessage('تم إضافة السؤال بنجاح', 'success');
 }
 
 function editFAQ(index) {
   const faq = siteData.faq[index];
-  // يمكن إضافة نافذة تعديل هنا
-  showMessage('ميزة التعديل قيد التطوير', 'info');
+  if (!faq) return;
+  document.getElementById('editFAQIndex').value = index;
+  document.getElementById('editFAQQuestion').value = faq.question;
+  document.getElementById('editFAQAnswer').value = faq.answer;
+  document.getElementById('editFAQCategory').value = faq.category;
+  document.getElementById('editFAQModal').style.display = 'block';
 }
 
 function deleteFAQ(index) {
@@ -1665,8 +1759,28 @@ function deleteFAQ(index) {
     siteData.faq.splice(index, 1);
     loadFAQ();
     updateStats();
+    saveSiteData();
+    updateMainSiteContent('faq');
     showMessage('تم حذف السؤال بنجاح', 'success');
   }
+}
+
+function updateFAQ() {
+  const index = parseInt(document.getElementById('editFAQIndex').value);
+  const question = document.getElementById('editFAQQuestion').value.trim();
+  const answer = document.getElementById('editFAQAnswer').value.trim();
+  const category = document.getElementById('editFAQCategory').value;
+  if (!question || !answer) {
+    showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
+    return;
+  }
+  siteData.faq[index] = { question, answer, category };
+  saveSiteData();
+  loadFAQ();
+  updateStats();
+  updateMainSiteContent('faq');
+  closeModal('editFAQModal');
+  showMessage('تم تحديث السؤال بنجاح', 'success');
 }
 
 // إدارة التقنيات المستقبلية
@@ -1688,6 +1802,7 @@ function loadFutureTech() {
       <div class="tech-content">
         <h4>${tech.name}</h4>
         <p>${tech.description}</p>
+        ${tech.tags && tech.tags.length ? `<div class="tech-tags">${tech.tags.map(t => `<span class='feature-tag'>${t}</span>`).join('')}</div>` : ''}
       </div>
       <div class="tech-actions">
         <button class="btn btn-sm btn-secondary" onclick="editTech(${index})">
@@ -1712,25 +1827,40 @@ function addTechnology() {
   const name = document.getElementById('newTechName').value.trim();
   const description = document.getElementById('newTechDescription').value.trim();
   const icon = document.getElementById('newTechIcon').value.trim();
+  const tagsInput = document.getElementById('newTechTags') ? document.getElementById('newTechTags').value : '';
+  const tags = tagsInput
+    .split(',')
+    .map(t => t.trim())
+    .filter(t => t.length > 0);
   
   if (!name || !description || !icon) {
     showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
     return;
   }
   
-  const newTech = { name, description, icon, image: '' };
+  const newTech = { name, description, icon, tags, image: '' };
   siteData.futureTech.push(newTech);
   
   closeModal('addTechModal');
   loadFutureTech();
   updateStats();
+  saveSiteData();
+  updateMainSiteContent('future-tech');
   showMessage('تم إضافة التقنية بنجاح', 'success');
 }
 
 function editTech(index) {
   const tech = siteData.futureTech[index];
-  // يمكن إضافة نافذة تعديل هنا
-  showMessage('ميزة التعديل قيد التطوير', 'info');
+  if (!tech) return;
+  document.getElementById('editTechIndex').value = index;
+  document.getElementById('editTechName').value = tech.name;
+  document.getElementById('editTechDescription').value = tech.description;
+  document.getElementById('editTechIcon').value = tech.icon;
+  const editTagsEl = document.getElementById('editTechTags');
+  if (editTagsEl) {
+    editTagsEl.value = (tech.tags || []).join(', ');
+  }
+  document.getElementById('editTechModal').style.display = 'block';
 }
 
 function deleteTech(index) {
@@ -1738,8 +1868,33 @@ function deleteTech(index) {
     siteData.futureTech.splice(index, 1);
     loadFutureTech();
     updateStats();
+    saveSiteData();
+    updateMainSiteContent('future-tech');
     showMessage('تم حذف التقنية بنجاح', 'success');
   }
+}
+
+function updateTech() {
+  const index = parseInt(document.getElementById('editTechIndex').value);
+  const name = document.getElementById('editTechName').value.trim();
+  const description = document.getElementById('editTechDescription').value.trim();
+  const icon = document.getElementById('editTechIcon').value.trim();
+  const tagsInput = document.getElementById('editTechTags') ? document.getElementById('editTechTags').value : '';
+  const tags = tagsInput
+    .split(',')
+    .map(t => t.trim())
+    .filter(t => t.length > 0);
+  if (!name || !description || !icon) {
+    showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
+    return;
+  }
+  siteData.futureTech[index] = { name, description, icon, tags, image: siteData.futureTech[index].image || '' };
+  saveSiteData();
+  loadFutureTech();
+  updateStats();
+  updateMainSiteContent('future-tech');
+  closeModal('editTechModal');
+  showMessage('تم تحديث التقنية بنجاح', 'success');
 }
 
 // إدارة المدونة
@@ -1806,13 +1961,21 @@ function addBlog() {
   closeModal('addBlogModal');
   loadBlog();
   updateStats();
+  saveSiteData();
+  updateMainSiteContent('blog');
   showMessage('تم إضافة المقال بنجاح', 'success');
 }
 
 function editBlog(index) {
   const post = siteData.blog[index];
-  // يمكن إضافة نافذة تعديل هنا
-  showMessage('ميزة التعديل قيد التطوير', 'info');
+  if (!post) return;
+  document.getElementById('editBlogIndex').value = index;
+  document.getElementById('editBlogTitle').value = post.title;
+  document.getElementById('editBlogExcerpt').value = post.excerpt;
+  document.getElementById('editBlogContent').value = post.content;
+  document.getElementById('editBlogCategory').value = post.category;
+  document.getElementById('editBlogDate').value = post.date;
+  document.getElementById('editBlogModal').style.display = 'block';
 }
 
 function deleteBlog(index) {
@@ -1820,8 +1983,30 @@ function deleteBlog(index) {
     siteData.blog.splice(index, 1);
     loadBlog();
     updateStats();
+    saveSiteData();
+    updateMainSiteContent('blog');
     showMessage('تم حذف المقال بنجاح', 'success');
   }
+}
+
+function updateBlog() {
+  const index = parseInt(document.getElementById('editBlogIndex').value);
+  const title = document.getElementById('editBlogTitle').value.trim();
+  const excerpt = document.getElementById('editBlogExcerpt').value.trim();
+  const content = document.getElementById('editBlogContent').value.trim();
+  const category = document.getElementById('editBlogCategory').value;
+  const date = document.getElementById('editBlogDate').value;
+  if (!title || !excerpt || !content || !category || !date) {
+    showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
+    return;
+  }
+  siteData.blog[index] = { title, excerpt, content, category, date, image: siteData.blog[index].image || '' };
+  saveSiteData();
+  loadBlog();
+  updateStats();
+  updateMainSiteContent('blog');
+  closeModal('editBlogModal');
+  showMessage('تم تحديث المقال بنجاح', 'success');
 }
 
 // إدارة آراء العملاء
@@ -1952,4 +2137,60 @@ function updateStats() {
     console.error('خطأ في تحديث الإحصائيات:', error);
   }
 }
+
+// دالة اختبار التنقل
+function testNavigation() {
+  console.log('=== اختبار التنقل ===');
+  
+  // اختبار وجود جميع الأقسام
+  const sections = ['overview', 'hero', 'about', 'partners', 'services', 'faq', 'future-tech', 'blog', 'policies', 'contact'];
+  sections.forEach(sectionId => {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      console.log(`✅ القسم ${sectionId} موجود`);
+      if (section.classList.contains('dashboard-section')) {
+        console.log(`✅ القسم ${sectionId} يحتوي على class dashboard-section`);
+      } else {
+        console.log(`❌ القسم ${sectionId} لا يحتوي على class dashboard-section`);
+      }
+    } else {
+      console.log(`❌ القسم ${sectionId} غير موجود`);
+    }
+  });
+  
+  // اختبار وجود جميع روابط التنقل
+  const navLinks = document.querySelectorAll('.nav-link');
+  console.log(`تم العثور على ${navLinks.length} رابط تنقل`);
+  
+  navLinks.forEach((link, index) => {
+    const sectionId = link.getAttribute('data-section');
+    console.log(`رابط ${index + 1}: ${sectionId}`);
+    
+    // اختبار النقر على الرابط
+    link.addEventListener('click', function(e) {
+      console.log(`تم النقر على رابط: ${sectionId}`);
+    });
+  });
+  
+  // اختبار دالة showSection
+  console.log('اختبار دالة showSection...');
+  showSection('overview');
+  
+  console.log('=== انتهى اختبار التنقل ===');
+}
+
+// دالة تعيين حالة تسجيل الدخول للاختبار
+function setLoginStatus(status = true) {
+  if (status) {
+    sessionStorage.setItem('adminLoggedIn', 'true');
+    console.log('تم تعيين حالة تسجيل الدخول إلى: true');
+  } else {
+    sessionStorage.removeItem('adminLoggedIn');
+    console.log('تم إزالة حالة تسجيل الدخول');
+  }
+}
+
+// إضافة الدوال إلى النافذة
+window.testNavigation = testNavigation;
+window.setLoginStatus = setLoginStatus;
 

@@ -634,31 +634,381 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    init();
-});
-
-// ===== Utility Functions =====
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
+    // ===== Utility Functions =====
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
             clearTimeout(timeout);
-            func(...args);
+            timeout = setTimeout(later, wait);
         };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
+    }
 
-function throttle(func, limit) {
-    let inThrottle;
-    return function() {
-        const args = arguments;
-        const context = this;
-        if (!inThrottle) {
-            func.apply(context, args);
-            inThrottle = true;
-            setTimeout(() => inThrottle = false, limit);
+    function throttle(func, limit) {
+        let inThrottle;
+        return function() {
+            const args = arguments;
+            const context = this;
+            if (!inThrottle) {
+                func.apply(context, args);
+                inThrottle = true;
+                setTimeout(() => inThrottle = false, limit);
+            }
+        };
+    }
+
+    // ===== Why Karmel Section Functionality =====
+    function initWhyKarmelSection() {
+        const whyKarmelCards = document.querySelectorAll('.why-karmel-card');
+        
+        if (whyKarmelCards.length === 0) return;
+        
+        // Add intersection observer for animation
+        const observerOptions = {
+            threshold: 0.3,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const cardObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        whyKarmelCards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'all 0.6s ease-out';
+            cardObserver.observe(card);
+        });
+        
+        // Add hover effects for stats
+        whyKarmelCards.forEach(card => {
+            const statNumber = card.querySelector('.stat-number');
+            if (statNumber) {
+                card.addEventListener('mouseenter', () => {
+                    animateStatNumber(statNumber);
+                });
+            }
+        });
+    }
+
+    // Animate stat numbers on hover
+    function animateStatNumber(statElement) {
+        const finalNumber = parseInt(statElement.textContent);
+        const duration = 1000;
+        const steps = 20;
+        const increment = finalNumber / steps;
+        let current = 0;
+        
+        const timer = setInterval(() => {
+            current += increment;
+            if (current >= finalNumber) {
+                current = finalNumber;
+                clearInterval(timer);
+            }
+            
+            if (statElement.textContent.includes('%')) {
+                statElement.textContent = Math.round(current) + '%';
+            } else if (statElement.textContent.includes('+')) {
+                statElement.textContent = Math.round(current) + '+';
+            } else {
+                statElement.textContent = Math.round(current);
+            }
+        }, duration / steps);
+    }
+
+    // ===== Customer Feedback Section Functionality =====
+    function initFeedbackSection() {
+        const feedbackCards = document.querySelectorAll('.feedback-card');
+        
+        if (feedbackCards.length === 0) return;
+        
+        // Add intersection observer for animation
+        const observerOptions = {
+            threshold: 0.3,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const cardObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        feedbackCards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'all 0.6s ease-out';
+            cardObserver.observe(card);
+        });
+        
+        // Add rating animation
+        feedbackCards.forEach(card => {
+            const ratingStars = card.querySelectorAll('.feedback-rating i');
+            if (ratingStars.length > 0) {
+                card.addEventListener('mouseenter', () => {
+                    animateRatingStars(ratingStars);
+                });
+            }
+        });
+        
+        // Add customer image hover effects
+        feedbackCards.forEach(card => {
+            const customerImage = card.querySelector('.customer-image');
+            if (customerImage) {
+                card.addEventListener('mouseenter', () => {
+                    customerImage.style.transform = 'scale(1.1) rotate(2deg)';
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    customerImage.style.transform = 'scale(1) rotate(0deg)';
+                });
+            }
+        });
+    }
+
+    // Animate rating stars
+    function animateRatingStars(stars) {
+        stars.forEach((star, index) => {
+            setTimeout(() => {
+                star.style.transform = 'scale(1.3) rotate(15deg)';
+                star.style.color = '#f59e0b';
+                
+                setTimeout(() => {
+                    star.style.transform = 'scale(1) rotate(0deg)';
+                    star.style.color = '#fbbf24';
+                }, 200);
+            }, index * 100);
+        });
+    }
+
+    // ===== Enhanced Navigation for New Sections =====
+    function enhanceNavigationForNewSections() {
+        // Smooth scroll to new sections
+        const whyKarmelLink = document.querySelector('a[href="#why-karmel"]');
+        const feedbackLink = document.querySelector('a[href="#feedback"]');
+        
+        if (whyKarmelLink) {
+            whyKarmelLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetSection = document.getElementById('why-karmel');
+                if (targetSection) {
+                    targetSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
         }
-    };
-} 
+        
+        if (feedbackLink) {
+            feedbackLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetSection = document.getElementById('feedback');
+                if (targetSection) {
+                    targetSection.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        }
+    }
+
+    // ===== Performance Optimization for New Sections =====
+    function optimizeNewSections() {
+        // Lazy load images in feedback section
+        const customerImages = document.querySelectorAll('.customer-image');
+        
+        if ('IntersectionObserver' in window) {
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        if (img.dataset.src) {
+                            img.src = img.dataset.src;
+                            img.removeAttribute('data-src');
+                            imageObserver.unobserve(img);
+                        }
+                    }
+                });
+            });
+            
+            customerImages.forEach(img => {
+                if (img.dataset.src) {
+                    imageObserver.observe(img);
+                }
+            });
+        }
+        
+        // Add loading states for buttons
+        const ctaButtons = document.querySelectorAll('.why-karmel-btn, .feedback-btn');
+        ctaButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                if (this.href.includes('#contact')) {
+                    // Add loading state
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التوجيه...';
+                    this.style.pointerEvents = 'none';
+                    
+                    // Reset after navigation
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                        this.style.pointerEvents = 'auto';
+                    }, 2000);
+                }
+            });
+        });
+    }
+
+    // ===== Accessibility Enhancements for New Sections =====
+    function enhanceAccessibilityForNewSections() {
+        // Add ARIA labels and roles
+        const whyKarmelCards = document.querySelectorAll('.why-karmel-card');
+        const feedbackCards = document.querySelectorAll('.feedback-card');
+        
+        whyKarmelCards.forEach((card, index) => {
+            card.setAttribute('role', 'article');
+            card.setAttribute('aria-labelledby', `why-karmel-title-${index}`);
+            
+            const title = card.querySelector('.why-karmel-title');
+            if (title) {
+                title.id = `why-karmel-title-${index}`;
+            }
+        });
+        
+        feedbackCards.forEach((card, index) => {
+            card.setAttribute('role', 'article');
+            card.setAttribute('aria-labelledby', `feedback-title-${index}`);
+            
+            const title = card.querySelector('.customer-name');
+            if (title) {
+                title.id = `feedback-title-${index}`;
+            }
+        });
+        
+        // Add keyboard navigation
+        const interactiveElements = document.querySelectorAll('.why-karmel-btn, .feedback-btn');
+        interactiveElements.forEach(element => {
+            element.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    element.click();
+                }
+            });
+        });
+    }
+
+    // ===== Initialize New Sections =====
+    function initNewSections() {
+        // Wait for DOM to be fully loaded
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initNewSections);
+            return;
+        }
+        
+        // Initialize all new section functionality
+        initWhyKarmelSection();
+        initFeedbackSection();
+        enhanceNavigationForNewSections();
+        optimizeNewSections();
+        enhanceAccessibilityForNewSections();
+        
+        // Add scroll-triggered animations
+        const scrollTriggeredElements = document.querySelectorAll('.why-karmel-card, .feedback-card');
+        
+        if ('IntersectionObserver' in window) {
+            const scrollObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-in');
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -100px 0px'
+            });
+            
+            scrollTriggeredElements.forEach(el => {
+                scrollObserver.observe(el);
+            });
+        }
+    }
+
+    // ===== Enhanced Form Validation for Contact Form =====
+    function enhanceContactFormValidation() {
+        const contactForm = document.querySelector('.contact-form');
+        if (!contactForm) return;
+        
+        const inputs = contactForm.querySelectorAll('input, textarea');
+        
+        inputs.forEach(input => {
+            // Add real-time validation
+            input.addEventListener('blur', () => {
+                validateField(input);
+            });
+            
+            input.addEventListener('input', () => {
+                if (input.classList.contains('error')) {
+                    input.classList.remove('error');
+                    const errorMessage = input.parentNode.querySelector('.error-message');
+                    if (errorMessage) {
+                        errorMessage.remove();
+                    }
+                }
+            });
+        });
+        
+        // Enhanced submit handling
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let isValid = true;
+            inputs.forEach(input => {
+                if (!validateField(input)) {
+                    isValid = false;
+                }
+            });
+            
+            if (isValid) {
+                // Show success state
+                showNotification('تم إرسال رسالتك بنجاح!', 'success');
+                
+                // Reset form
+                contactForm.reset();
+                inputs.forEach(input => {
+                    input.classList.remove('valid');
+                });
+            }
+        });
+    }
+
+    // ===== Initialize Everything Including New Sections =====
+    function initAll() {
+        // Initialize existing functionality
+        init();
+        
+        // Initialize new sections
+        initNewSections();
+        
+        // Enhance contact form
+        enhanceContactFormValidation();
+    }
+
+    // Call initAll when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initAll);
+    } else {
+        initAll();
+    }
+}); 
