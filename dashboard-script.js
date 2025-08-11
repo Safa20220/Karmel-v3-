@@ -38,7 +38,12 @@ let siteData = {
     { name: "دعم فني", icon: "🛠️" },
     { name: "استشارة تقنية", icon: "💡" },
     { name: "تكامل الأنظمة", icon: "🔗" },
-    { name: "تدريب الموظفين", icon: "🎓" }
+    { name: "تدريب الموظفين", icon: "🎓" },
+    { name: "تطوير المواقع", icon: "🌐" },
+    { name: "تطوير التطبيقات", icon: "📱" },
+    { name: "خدمات سحابية", icon: "☁️" },
+    { name: "أمن المعلومات", icon: "🔒" },
+    { name: "تحليل البيانات", icon: "📊" }
   ],
   faq: [
     {
@@ -82,102 +87,6 @@ let siteData = {
       category: "general"
     }
   ],
-  futureTech: [
-    {
-      name: "الذكاء الاصطناعي",
-      description: "نطور حلول ذكية تستخدم تقنيات الذكاء الاصطناعي والتعلم الآلي لتحسين كفاءة الأعمال واتخاذ القرارات الذكية.",
-      icon: "🤖",
-      image: "../ai-tech.jpg"
-    },
-    {
-      name: "إنترنت الأشياء",
-      description: "نربط الأجهزة والأنظمة لإنشاء شبكة ذكية تتيح المراقبة والتحكم عن بُعد وتحسين العمليات.",
-      icon: "🌐",
-      image: "../iot-tech.jpg"
-    },
-    {
-      name: "الحوسبة السحابية",
-      description: "نقدم حلول سحابية متقدمة تضمن المرونة والأمان والتوسع حسب احتياجات العمل.",
-      icon: "☁️",
-      image: "../cloud-tech.jpg"
-    },
-    {
-      name: "البلوك تشين",
-      description: "نطور تطبيقات بلوك تشين آمنة وموثوقة للمعاملات الرقمية والعقود الذكية.",
-      icon: "⛓️",
-      image: "../blockchain-tech.jpg"
-    }
-  ],
-  blog: [
-    {
-      title: "مستقبل التطوير الرقمي في 2024",
-      excerpt: "اكتشف أحدث الاتجاهات والتقنيات التي ستشكل مستقبل التطوير الرقمي في العام القادم.",
-      content: "مع دخولنا عام 2024، نشهد تطورات تقنية متسارعة تشكل مستقبل التطوير الرقمي...",
-      category: "technology",
-      image: "../blog-1.jpg",
-      date: "2024-01-15"
-    },
-    {
-      title: "كيفية اختيار التقنيات المناسبة لمشروعك",
-      excerpt: "دليل شامل لاختيار التقنيات والأدوات المناسبة لمشروعك التقني.",
-      content: "اختيار التقنيات المناسبة هو أحد أهم القرارات التي تؤثر على نجاح مشروعك التقني...",
-      category: "development",
-      image: "../blog-2.jpg",
-      date: "2024-01-10"
-    },
-    {
-      title: "أهمية تجربة المستخدم في التطبيقات الحديثة",
-      excerpt: "لماذا تعتبر تجربة المستخدم عاملاً حاسماً في نجاح التطبيقات والمواقع الإلكترونية.",
-      content: "في عالم التطبيقات والمواقع الإلكترونية، تعتبر تجربة المستخدم (UX) عاملاً حاسماً...",
-      category: "development",
-      image: "../blog-3.jpg",
-      date: "2024-01-05"
-    },
-    {
-      title: "أفضل الممارسات في أمان التطبيقات",
-      excerpt: "تعرف على أهم الممارسات والإجراءات لضمان أمان تطبيقاتك وبياناتك.",
-      content: "مع تزايد التهديدات الأمنية، أصبح أمان التطبيقات أولوية قصوى...",
-      category: "technology",
-      image: "../blog-4.jpg",
-      date: "2023-12-28"
-    },
-    {
-      title: "كيفية بناء فريق تطوير ناجح",
-      excerpt: "نصائح وإرشادات لبناء وإدارة فريق تطوير محترف وفعال.",
-      content: "بناء فريق تطوير ناجح يتطلب أكثر من مجرد توظيف مطورين موهوبين...",
-      category: "business",
-      image: "../blog-5.jpg",
-      date: "2023-12-20"
-    },
-    {
-      title: "التكامل بين الأنظمة: التحديات والحلول",
-      excerpt: "اكتشف التحديات والحلول في مجال تكامل الأنظمة والتطبيقات المختلفة.",
-      content: "تكامل الأنظمة هو عملية ربط الأنظمة والتطبيقات المختلفة لتعمل معاً...",
-      category: "technology",
-      image: "../blog-6.jpg",
-      date: "2023-12-15"
-    }
-  ],
-  feedback: [
-    {
-      name: "أحمد محمد",
-      company: "شركة التقنية المتقدمة",
-      text: "تعاملت مع فريق كرمل+ في مشروع تطوير موقع إلكتروني متقدم. النتيجة كانت مذهلة! الفريق محترف ومتعاون، والمشروع تم تسليمه في الوقت المحدد وبأعلى جودة.",
-      image: "../client-1.jpg"
-    },
-    {
-      name: "سارة أحمد",
-      company: "مؤسسة الإبداع الرقمي",
-      text: "كرمل+ هي الشريك التقني المثالي لأي مشروع. خبرتهم الواسعة وفهمهم العميق لاحتياجات العملاء يجعل التعامل معهم تجربة ممتعة ومثمرة.",
-      image: "../client-2.jpg"
-    }
-  ],
-  contact: {
-    phone: "+972 58-630-0009",
-    email: "support@karmelplus.com",
-    address: "شعفاط، القدس",
-    map: "https://www.google.com/maps?q=Jerusalem%2C%20Shuafat&output=embed"
-  },
   whyKarmel: {
     title: "لماذا كرمل+؟",
     subtitle: "اكتشف الأسباب التي تجعلنا الخيار الأمثل لتحويل أفكارك إلى واقع رقمي متميز",
@@ -193,7 +102,7 @@ let siteData = {
         icon: "fas fa-shield-alt",
         title: "أمان وموثوقية",
         desc: "نضمن أمان بياناتك ومشاريعك مع أحدث تقنيات الحماية والنسخ الاحتياطي التلقائي. نطبق معايير الأمان العالمية لحماية معلوماتك.",
-        stat: "99.9%",
+        stat: "99%",
         statText: "معدل الأمان"
       },
       {
@@ -204,13 +113,33 @@ let siteData = {
         statText: "سنوات خبرة"
       },
       {
-        icon: "fas fa-headset",
-        title: "دعم مستمر",
-        desc: "نقدم دعم فني مستمر وخدمة عملاء متميزة قبل وأثناء وبعد تسليم المشروع. فريق دعم متاح على مدار الساعة.",
-        stat: "24/7",
-        statText: "دعم متواصل"
+        icon: "fas fa-lightbulb",
+        title: "حلول مبتكرة",
+        desc: "نبتكر حلولاً تقنية فريدة تناسب احتياجاتك الخاصة وتساعدك على تحقيق أهدافك. نستخدم أحدث التقنيات والذكاء الاصطناعي.",
+        stat: "100%",
+        statText: "حلول مخصصة"
       }
     ]
+  },
+  feedback: [
+    {
+      name: "فاطمة محمود",
+      text: "من أفضل الشركات التي تعاملت معها! كرمل+ قدمت لنا حلولاً مبتكرة وساعدتنا على تحقيق أهدافنا بسرعة قياسية.",
+      image: "image.png",
+      rating: 5
+    },
+    {
+      name: "علي حسن",
+      text: "كرمل+ غيرت مفهومنا عن التطوير التقني. الفريق محترف جداً والنتائج مذهلة. أنصح جميع الشركات بالتعامل معهم!",
+      image: "image2.webp",
+      rating: 5
+    }
+  ],
+  contact: {
+    phone: "+972 58-630-0009",
+    email: "support@karmelplus.com",
+    address: "شعفاط، القدس",
+    map: "https://www.google.com/maps?q=Jerusalem%2C%20Shuafat&output=embed"
   },
   policies: {
     privacy: {
@@ -280,15 +209,6 @@ function initializeDashboard() {
     
     loadFAQ();
     console.log('تم تحميل الأسئلة الشائعة');
-    
-    loadFutureTech();
-    console.log('تم تحميل التقنيات المستقبلية');
-    
-    loadBlog();
-    console.log('تم تحميل المدونة');
-    
-    loadFeedback();
-    console.log('تم تحميل آراء العملاء');
     
     loadWhyKarmelData();
     console.log('تم تحميل بيانات لماذا كرمل');
@@ -2113,8 +2033,8 @@ function updateStats() {
       'partnersCount': siteData.partners.length,
       'servicesCount': siteData.services.length,
       'faqCount': siteData.faq.length,
-      'techCount': siteData.futureTech.length,
-      'blogCount': siteData.blog.length
+      'whyKarmelCount': siteData.whyKarmel.cards.length,
+      'feedbackCount': siteData.feedback.length
     };
     
     Object.keys(elements).forEach(elementId => {
@@ -2125,12 +2045,6 @@ function updateStats() {
         console.warn(`عنصر ${elementId} غير موجود`);
       }
     });
-    
-    // إضافة فحص لـ feedbackCount إذا كان موجوداً
-    const feedbackCountElement = document.getElementById('feedbackCount');
-    if (feedbackCountElement) {
-      feedbackCountElement.textContent = siteData.feedback.length;
-    }
     
     console.log('تم تحديث الإحصائيات');
   } catch (error) {
@@ -2143,7 +2057,7 @@ function testNavigation() {
   console.log('=== اختبار التنقل ===');
   
   // اختبار وجود جميع الأقسام
-  const sections = ['overview', 'hero', 'about', 'partners', 'services', 'faq', 'future-tech', 'blog', 'policies', 'contact'];
+  const sections = ['overview', 'hero', 'about', 'partners', 'services', 'faq', 'why-karmel', 'feedback', 'policies', 'contact'];
   sections.forEach(sectionId => {
     const section = document.getElementById(sectionId);
     if (section) {
@@ -2190,7 +2104,187 @@ function setLoginStatus(status = true) {
   }
 }
 
+// دالة تحميل بيانات "لماذا كرمل+"
+function loadWhyKarmelData() {
+  const container = document.getElementById('whyKarmelGrid');
+  if (!container) return;
+  
+  container.innerHTML = '';
+  
+  siteData.whyKarmel.cards.forEach((card, index) => {
+    const cardElement = createWhyKarmelCard(card, index);
+    container.appendChild(cardElement);
+  });
+}
+
+// دالة إنشاء بطاقة "لماذا كرمل+"
+function createWhyKarmelCard(card, index) {
+  const cardDiv = document.createElement('div');
+  cardDiv.className = 'why-karmel-card';
+  cardDiv.innerHTML = `
+    <div class="card-header">
+      <div class="card-icon">
+        <i class="${card.icon}"></i>
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-sm btn-secondary" onclick="editWhyKarmelCard(${index})">
+          <i class="fas fa-edit"></i>
+        </button>
+        <button class="btn btn-sm btn-danger" onclick="deleteWhyKarmelCard(${index})">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    </div>
+    <div class="card-content">
+      <h3>${card.title}</h3>
+      <p>${card.desc}</p>
+      <div class="card-stats">
+        <span class="stat-number">${card.stat}</span>
+        <span class="stat-text">${card.statText}</span>
+      </div>
+    </div>
+  `;
+  return cardDiv;
+}
+
+// دالة إضافة بطاقة "لماذا كرمل+" جديدة
+function addWhyKarmelCard() {
+  const newCard = {
+    icon: "fas fa-star",
+    title: "ميزة جديدة",
+    desc: "وصف الميزة الجديدة",
+    stat: "100%",
+    statText: "نسبة النجاح"
+  };
+  
+  siteData.whyKarmel.cards.push(newCard);
+  loadWhyKarmelData();
+  updateStats();
+  showMessage('تم إضافة البطاقة الجديدة بنجاح', 'success');
+}
+
+// دالة تعديل بطاقة "لماذا كرمل+"
+function editWhyKarmelCard(index) {
+  const card = siteData.whyKarmel.cards[index];
+  // يمكن إضافة نافذة منبثقة للتعديل هنا
+  showMessage(`تم تحديد البطاقة: ${card.title} للتعديل`, 'info');
+}
+
+// دالة حذف بطاقة "لماذا كرمل+"
+function deleteWhyKarmelCard(index) {
+  if (confirm('هل أنت متأكد من حذف هذه البطاقة؟')) {
+    siteData.whyKarmel.cards.splice(index, 1);
+    loadWhyKarmelData();
+    updateStats();
+    showMessage('تم حذف البطاقة بنجاح', 'success');
+  }
+}
+
+// دالة إعادة تعيين قسم "لماذا كرمل+"
+function resetWhyKarmel() {
+  if (confirm('هل تريد إعادة تعيين جميع البيانات؟')) {
+    // يمكن إعادة تحميل البيانات الأصلية هنا
+    loadWhyKarmelData();
+    showMessage('تم إعادة تعيين البيانات', 'success');
+  }
+}
+
+// دالة تحميل آراء العملاء
+function loadFeedback() {
+  const container = document.getElementById('feedbackGrid');
+  if (!container) return;
+  
+  container.innerHTML = '';
+  
+  siteData.feedback.forEach((feedback, index) => {
+    const feedbackElement = createFeedbackCard(feedback, index);
+    container.appendChild(feedbackElement);
+  });
+}
+
+// دالة إنشاء بطاقة رأي العميل
+function createFeedbackCard(feedback, index) {
+  const cardDiv = document.createElement('div');
+  cardDiv.className = 'feedback-card';
+  cardDiv.innerHTML = `
+    <div class="card-header">
+      <div class="feedback-image">
+        <img src="${feedback.image}" alt="${feedback.name}" class="customer-image">
+      </div>
+      <div class="card-actions">
+        <button class="button btn-sm btn-secondary" onclick="editFeedback(${index})">
+          <i class="fas fa-edit"></i>
+        </button>
+        <button class="button btn-sm btn-danger" onclick="deleteFeedback(${index})">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    </div>
+    <div class="card-content">
+      <h3>${feedback.name}</h3>
+      <p>${feedback.text}</p>
+      <div class="feedback-rating">
+        ${'<i class="fas fa-star"></i>'.repeat(feedback.rating)}
+      </div>
+    </div>
+  `;
+  return cardDiv;
+}
+
+// دالة إضافة رأي جديد
+function addFeedback() {
+  const name = document.getElementById('newFeedbackName').value;
+  const text = document.getElementById('newFeedbackText').value;
+  const rating = parseInt(document.getElementById('newFeedbackRating').value);
+  
+  if (!name || !text) {
+    showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
+    return;
+  }
+  
+  const newFeedback = {
+    name: name,
+    text: text,
+    image: 'image.png', // صورة افتراضية
+    rating: rating
+  };
+  
+  siteData.feedback.push(newFeedback);
+  loadFeedback();
+  updateStats();
+  closeModal('addFeedbackModal');
+  showMessage('تم إضافة الرأي الجديد بنجاح', 'success');
+  
+  // إعادة تعيين الحقول
+  document.getElementById('newFeedbackName').value = '';
+  document.getElementById('newFeedbackText').value = '';
+  document.getElementById('newFeedbackRating').value = '5';
+}
+
+// دالة تعديل رأي العميل
+function editFeedback(index) {
+  const feedback = siteData.feedback[index];
+  showMessage(`تم تحديد رأي: ${feedback.name} للتعديل`, 'info');
+}
+
+// دالة حذف رأي العميل
+function deleteFeedback(index) {
+  if (confirm('هل أنت متأكد من حذف هذا الرأي؟')) {
+    siteData.feedback.splice(index, 1);
+    loadFeedback();
+    updateStats();
+    showMessage('تم حذف الرأي بنجاح', 'success');
+  }
+}
+
 // إضافة الدوال إلى النافذة
 window.testNavigation = testNavigation;
 window.setLoginStatus = setLoginStatus;
+window.addWhyKarmelCard = addWhyKarmelCard;
+window.editWhyKarmelCard = editWhyKarmelCard;
+window.deleteWhyKarmelCard = deleteWhyKarmelCard;
+window.resetWhyKarmel = resetWhyKarmel;
+window.addFeedback = addFeedback;
+window.editFeedback = editFeedback;
+window.deleteFeedback = deleteFeedback;
 
