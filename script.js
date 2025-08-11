@@ -410,6 +410,51 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 5000);
     }
     
+    // ===== انيميشن الانتقال بين الأقسام =====
+    function initSectionAnimations() {
+        const sections = document.querySelectorAll('.section');
+        
+        // إضافة كلاس active-section للقسم الأول
+        if (sections.length > 0) {
+            sections[0].classList.add('active-section');
+        }
+        
+        // مراقبة التمرير لتفعيل الانيميشن
+        const observerOptions = {
+            threshold: 0.3,
+            rootMargin: '0px 0px -100px 0px'
+        };
+        
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // إزالة كلاس active-section من جميع الأقسام
+                    sections.forEach(section => section.classList.remove('active-section'));
+                    
+                    // إضافة كلاس active-section للقسم الحالي
+                    entry.target.classList.add('active-section');
+                    
+                    // تفعيل الانيميشن للقسم الجديد فقط (ما عدا قسم الخدمات)
+                    if (!entry.target.classList.contains('scroll-animate') && 
+                        !entry.target.classList.contains('services-modern-wave')) {
+                        
+                        entry.target.classList.add('scroll-animate');
+                        
+                        // إزالة كلاس الانيميشن بعد انتهائه
+                        setTimeout(() => {
+                            entry.target.classList.remove('scroll-animate');
+                        }, 800);
+                    }
+                }
+            });
+        }, observerOptions);
+        
+        // مراقبة جميع الأقسام
+        sections.forEach(section => {
+            sectionObserver.observe(section);
+        });
+    }
+
     // ===== Enhanced Touch Interactions =====
     let touchStartY = 0;
     let touchEndY = 0;
@@ -658,48 +703,30 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 
-    // ===== Why Karmel Section Functionality =====
     function initWhyKarmelSection() {
-        const whyKarmelCards = document.querySelectorAll('.why-karmel-card');
-        
-        if (whyKarmelCards.length === 0) return;
-        
-        // Add intersection observer for animation
-        const observerOptions = {
-            threshold: 0.3,
-            rootMargin: '0px 0px -50px 0px'
-        };
-        
-        const cardObserver = new IntersectionObserver((entries) => {
+        const statNumbers = document.querySelectorAll('.why-karmel-section .stat-number');
+        if (!statNumbers.length) return;
+
+        const observer = new IntersectionObserver((entries, observerInstance) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
+                    const statElement = entry.target;
+                    animateStatNumber(statElement);
+                    observerInstance.unobserve(statElement); // Animate only once
                 }
             });
-        }, observerOptions);
-        
-        whyKarmelCards.forEach(card => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(30px)';
-            card.style.transition = 'all 0.6s ease-out';
-            cardObserver.observe(card);
+        }, {
+            threshold: 0.8
         });
-        
-        // Add hover effects for stats
-        whyKarmelCards.forEach(card => {
-            const statNumber = card.querySelector('.stat-number');
-            if (statNumber) {
-                card.addEventListener('mouseenter', () => {
-                    animateStatNumber(statNumber);
-                });
-            }
+
+        statNumbers.forEach(stat => {
+            observer.observe(stat);
         });
     }
 
-    // Animate stat numbers on hover
     function animateStatNumber(statElement) {
-        const finalNumber = parseInt(statElement.textContent);
+        const targetText = statElement.textContent || statElement.innerText;
+        const finalNumber = parseInt(targetText);
         const duration = 1000;
         const steps = 20;
         const increment = finalNumber / steps;
@@ -979,9 +1006,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             
             if (isValid) {
-                // Show success state
-                showNotification('تم إرسال رسالتك بنجاح!', 'success');
-                
                 // Reset form
                 contactForm.reset();
                 inputs.forEach(input => {
@@ -1075,6 +1099,33 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // ===== Accordion Functionality for Blog =====
+    function initBlogAccordion() {
+        const accordionItems = document.querySelectorAll('.accordion-item');
+        if (!accordionItems.length) return;
+
+        accordionItems.forEach(item => {
+            const header = item.querySelector('.accordion-header');
+            header.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
+
+                // Close all other items
+                accordionItems.forEach(otherItem => {
+                    if (otherItem !== item) {
+                        otherItem.classList.remove('active');
+                    }
+                });
+
+                // Toggle the clicked item
+                if (isActive) {
+                    item.classList.remove('active');
+                } else {
+                    item.classList.add('active');
+                }
+            });
+        });
+    }
+
     // ===== Initialize Everything Including New Sections =====
     function initAll() {
         // Initialize existing functionality
@@ -1088,6 +1139,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Initialize services navigation
         initServicesNavigation();
+        
+        // Initialize blog accordion
+        initBlogAccordion();
+        
+        // Initialize section animations
+        initSectionAnimations();
     }
 
     // Call initAll when DOM is ready

@@ -206,10 +206,10 @@ class SiteUpdater {
           item.className = 'faq-item';
           item.innerHTML = `
             <div class="faq-question">
-              <h3><span class="ar"></span><span class="en" style="display:none;"></span></h3>
+              <h3><span class="ar"></span><"></span></h3>
               <i class="fas fa-chevron-down"></i>
             </div>
-            <div class="faq-answer"><p><span class="ar"></span><span class="en" style="display:none;"></span></p></div>
+            <div class="faq-answer"><p><span class="ar"></span><"></span></p></div>
           `;
         }
         faqContainer.appendChild(item);
