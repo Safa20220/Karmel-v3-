@@ -79,7 +79,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (currentScrollY > 100) {
             header.style.background = 'rgba(255, 255, 255, 0.95)';
             header.style.backdropFilter = 'blur(15px)';
-            header.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.1)';
             
             // Hide/show header on scroll for mobile (but keep menu button visible)
             if (window.innerWidth <= 768) {
@@ -96,7 +95,6 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             header.style.background = 'var(--white)';
             header.style.backdropFilter = 'none';
-            header.style.boxShadow = 'var(--shadow)';
             header.style.transform = 'translateY(0)';
         }
         
@@ -993,6 +991,90 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // ===== Services Navigation =====
+    function initServicesNavigation() {
+        const servicesContainer = document.querySelector('.services-container');
+        const servicesScroll = document.getElementById('servicesScroll');
+        const prevBtn = document.getElementById('servicesPrev');
+        const nextBtn = document.getElementById('servicesNext');
+
+        if (!servicesScroll || !prevBtn || !nextBtn) return;
+
+        const isRTL = document.documentElement.dir === 'rtl';
+        let scrollAmount = 0;
+
+        const updateScroll = () => {
+            servicesScroll.style.transform = `translateX(${isRTL ? scrollAmount : -scrollAmount}px)`;
+        };
+
+        const updateButtons = () => {
+            const maxScroll = servicesScroll.scrollWidth - servicesContainer.clientWidth;
+            prevBtn.disabled = scrollAmount <= 0;
+            nextBtn.disabled = scrollAmount >= maxScroll;
+        };
+
+        const getStep = () => {
+            const firstItem = servicesScroll.querySelector('.service-modern-item');
+            if (!firstItem) return 0;
+            const style = window.getComputedStyle(firstItem);
+            const marginRight = parseFloat(style.marginRight) || 0;
+            const marginLeft = parseFloat(style.marginLeft) || 0;
+            return firstItem.offsetWidth + marginRight + marginLeft;
+        };
+
+        nextBtn.addEventListener('click', () => {
+            const step = getStep();
+            const maxScroll = servicesScroll.scrollWidth - servicesContainer.clientWidth;
+            if (scrollAmount < maxScroll) {
+                scrollAmount += step;
+                if (scrollAmount > maxScroll) {
+                    scrollAmount = maxScroll;
+                }
+                updateScroll();
+                updateButtons();
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            const step = getStep();
+            if (scrollAmount > 0) {
+                scrollAmount -= step;
+                if (scrollAmount < 0) {
+                    scrollAmount = 0;
+                }
+                updateScroll();
+                updateButtons();
+            }
+        });
+
+        const debounce = (func, wait) => {
+            let timeout;
+            return function(...args) {
+                const context = this;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(context, args), wait);
+            };
+        };
+
+        const handleResize = () => {
+            scrollAmount = 0;
+            updateScroll();
+            updateButtons();
+        };
+        
+        window.addEventListener('resize', debounce(handleResize, 250));
+
+        // Initial check
+        handleResize();
+
+        // Ensure calculations are correct after everything is loaded
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                handleResize();
+            }, 200);
+        });
+    }
+
     // ===== Initialize Everything Including New Sections =====
     function initAll() {
         // Initialize existing functionality
@@ -1003,6 +1085,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Enhance contact form
         enhanceContactFormValidation();
+        
+        // Initialize services navigation
+        initServicesNavigation();
     }
 
     // Call initAll when DOM is ready
