@@ -829,8 +829,8 @@ textarea.form-control {
 .modal-content {
   background: var(--bg-primary);
   border-radius: 12px;
-  width: 90%;
-  max-width: 500px;
+  width: 92%;
+  max-width: 640px;
   max-height: 90vh;
   margin: 2vh auto;
   box-shadow: var(--shadow-dark);
@@ -838,6 +838,18 @@ textarea.form-control {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+}
+
+/* حجم أوسع لحوارات التحرير عند الحاجة */
+.modal--wide .modal-content { max-width: 820px; }
+.modal--wide .modal-body { max-height: calc(90vh - 140px); overflow-y: auto; }
+
+/* تحسين حقول المدخلات داخل المودال */
+.modal .form-group .form-control {
+  min-height: 44px;
+}
+.modal .form-group textarea.form-control {
+  min-height: 140px;
 }
 
 @keyframes slideIn {
@@ -931,10 +943,12 @@ textarea.form-control {
 /* Messages */
 .message-container {
   position: fixed;
-  top: 100px;
-  left: 20px;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 3000;
-  max-width: 400px;
+  width: min(92vw, 680px);
+  pointer-events: none;
 }
 
 /* Loading Animation */
@@ -1020,35 +1034,27 @@ textarea.form-control {
 }
 
 .message {
-  padding: 1rem 1.5rem;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  font-weight: 600;
-  animation: slideInRight 0.3s ease;
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  margin: 0.5rem auto;
+  font-weight: 700;
+  animation: slideDownFade 0.25s ease;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  text-align: center;
+  line-height: 1.6;
+  pointer-events: auto;
 }
 
-@keyframes slideInRight {
-  from { transform: translateX(100%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+@keyframes slideDownFade {
+  from { transform: translate(-50%, -10px); opacity: 0; }
+  to { transform: translate(-50%, 0); opacity: 1; }
 }
 
-.message.success {
-  background: #d1fae5;
-  color: #065f46;
-  border: 1px solid #a7f3d0;
-}
+.message.success { background: #10b981; color: #ffffff; border: 1px solid #0ea37c; }
 
-.message.error {
-  background: #fee2e2;
-  color: #991b1b;
-  border: 1px solid #fecaca;
-}
+.message.error { background: #ef4444; color: #ffffff; border: 1px solid #dc2626; }
 
-.message.warning {
-  background: #fef3c7;
-  color: #92400e;
-  border: 1px solid #fde68a;
-}
+.message.warning { background: #f59e0b; color: #1f2937; border: 1px solid #d97706; }
 
 /* Responsive Design */
 @media (max-width: 1024px) {

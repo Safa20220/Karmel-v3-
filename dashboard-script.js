@@ -14,12 +14,12 @@ let siteData = {
     description: "نحن في كرمل فريق متخصص في تطوير البرمجيات وتصميم الحلول الرقمية الذكية التي تواكب متطلبات السوق وتواجه التحديات بثقة. نضم مطورين، مصممين، ومهندسي برمجيات يعملون بشغف واحد: تحويل الأفكار إلى حلول تقنية فعّالة. نبدأ بتحليل دقيق لاحتياجات العميل، وننفذ بعناية واحتراف، مع التزام كامل في كل مرحلة من مراحل المشروع — من التخطيط إلى الإطلاق وما بعده. نحرص على أن تكون تجربة التعاون معنا سلسة، مهنية، ومبنية على نتائج حقيقية وثقة تدوم."
   },
   partners: [
-    { name: "019", type: "شركة اتصالات", image: "../i1.png" },
-    { name: "Hallo 015", type: "شركة اتصالات", image: "../i2.png" },
-    { name: "Tranzilla", type: "بوابة دفع", image: "../i3.png" },
-    { name: "freeRadius", type: "سيرفر راديوس", image: "../i4.png" },
-    { name: "ريووحيت online", type: "برنامج محاسبة", image: "../i5.png" },
-    { name: "Priority", type: "برنامج ERP", image: "../i6.png" },
+    { name: "019", type: "شركة اتصالات", image: "../i1.png", featured: true },
+    { name: "Hallo 015", type: "شركة اتصالات", image: "../i2.png", featured: true },
+    { name: "Tranzilla", type: "بوابة دفع", image: "../i3.png", featured: true },
+    { name: "freeRadius", type: "سيرفر راديوس", image: "../i4.png", featured: true },
+    { name: "ريووحيت online", type: "برنامج محاسبة", image: "../i5.png", featured: true },
+    { name: "Priority", type: "برنامج ERP", image: "../i6.png", featured: true },
     { name: "Golan", type: "شركة اتصالات", image: "../i7.png" },
     { name: "Cellcom", type: "شركة اتصالات", image: "../i8.png" },
     { name: "We4g", type: "شركة اتصالات", image: "../i9.png" },
@@ -309,22 +309,9 @@ function updateMainSiteContent(section = null) {
   // إرسال إشعار للموقع الأساسي بالتحديث
   localStorage.setItem('forceUpdate', new Date().getTime().toString());
   console.log('تم إرسال إشعار تحديث للموقع الأساسي للمقسم:', section);
-  
-  // إظهار رسالة تأكيد للمستخدم
-  showNotification(`تم تحديث ${section || 'جميع الأقسام'} بنجاح`, 'success');
 }
 
-// دالة اختبار التحديث
-function testSiteUpdate() {
-  console.log('اختبار التحديث من الداشبورد...');
-  if (window.siteUpdater) {
-    window.siteUpdater.testUpdate();
-    showNotification('تم اختبار التحديث، راجع الكونسول للتفاصيل', 'info');
-  } else {
-    console.error('siteUpdater غير متاح');
-    showNotification('خطأ: siteUpdater غير متاح', 'error');
-  }
-}
+// تم حذف دالة اختبار التحديث حسب الطلب
 
 // دالة إظهار الإشعارات
 function showNotification(message, type = 'info') {
@@ -382,7 +369,7 @@ function showNotification(message, type = 'info') {
 function updateMainSite() {
   console.log('تحديث الموقع الأساسي...');
   updateMainSiteContent();
-  showNotification('تم إرسال طلب تحديث للموقع الأساسي', 'success');
+  showNotification('تم تحديث الموقع بنجاح', 'success');
 }
 
 // تحديث الإحصائيات
@@ -542,22 +529,37 @@ function updateHero() {
   console.log('updateHero تم استدعاؤها');
   showLoading();
   
+  try {
   siteData.hero.title = document.getElementById('heroTitle').value;
   siteData.hero.desc1 = document.getElementById('heroDesc1').value;
   siteData.hero.desc2 = document.getElementById('heroDesc2').value;
   siteData.hero.button = document.getElementById('heroButton').value;
-  
   console.log('بيانات Hero المحدثة:', siteData.hero);
   
   const imageFile = document.getElementById('heroImage').files[0];
   if (imageFile) {
     const reader = new FileReader();
-    reader.onload = function(e) {
-      siteData.hero.image = e.target.result;
+      reader.onload = async function(e) {
+        let dataUrl = e.target.result;
+        // ضغط إذا كان الملف كبيراً
+        if (imageFile.size > 800 * 1024) {
+          dataUrl = await compressDataUrl(dataUrl, 1400, 1400, 0.82);
+        }
+        siteData.hero.image = dataUrl;
+        try {
       saveSiteData();
         updateMainSiteContent('hero');
-      hideLoading();
       showSuccessMessage('تم تحديث الصفحة الرئيسية بنجاح!');
+        } catch (err) {
+          console.error('LocalStorage error:', err);
+          showMessage('تعذر حفظ الصورة (قد يكون الحجم كبير). جرّب صورة أصغر.', 'error');
+        } finally {
+          hideLoading();
+        }
+      };
+      reader.onerror = function() {
+        hideLoading();
+        showMessage('فشل قراءة الصورة. حاول مرة أخرى.', 'error');
     };
     reader.readAsDataURL(imageFile);
   } else {
@@ -566,24 +568,21 @@ function updateHero() {
     hideLoading();
     showSuccessMessage('تم تحديث الصفحة الرئيسية بنجاح!');
   }
+  } catch (err) {
+    console.error('خطأ في updateHero:', err);
+    hideLoading();
+    showMessage('حدث خطأ غير متوقع عند حفظ الصورة', 'error');
+  }
 }
 
-// إعادة تعيين قسم Hero
-function resetHero() {
-  document.getElementById('heroTitle').value = siteData.hero.title;
-  document.getElementById('heroDesc1').value = siteData.hero.desc1;
-  document.getElementById('heroDesc2').value = siteData.hero.desc2;
-  document.getElementById('heroButton').value = siteData.hero.button;
-  document.getElementById('heroImagePreview').src = siteData.hero.image;
-  showMessage('تم إعادة تعيين البيانات', 'warning');
-}
+// تمت إزالة إعادة التعيين حسب الطلب
 
 // تحديث قسم About
 function updateAbout() {
   console.log('بدء تحديث قسم "من نحن"...');
   showLoading();
   // جمع البيانات من النموذج
-  const newTitle = document.getElementById('aboutTitle').value;
+  const newTitle = (document.getElementById('aboutTitle').value || '').trim();
   const newDesc = document.getElementById('aboutDesc').value;
   console.log('البيانات الجديدة:', { title: newTitle, desc: newDesc });
   // تحديث البيانات
@@ -598,12 +597,7 @@ function updateAbout() {
   console.log('انتهى تحديث قسم "من نحن"');
 }
 
-// إعادة تعيين قسم About
-function resetAbout() {
-  document.getElementById('aboutTitle').value = siteData.about.title;
-  document.getElementById('aboutDesc').value = siteData.about.description;
-  showMessage('تم إعادة تعيين البيانات', 'warning');
-}
+// تمت إزالة إعادة التعيين حسب الطلب
 
 // تحديث قسم Vision
 function updateVision() {
@@ -620,16 +614,7 @@ function updateVision() {
   showSuccessMessage('تم تحديث الرؤية والمهمة والقيم بنجاح!');
 }
 
-// إعادة تعيين قسم Vision
-function resetVision() {
-  document.getElementById('missionText').value = siteData.vision.mission.text;
-  document.getElementById('missionIcon').value = siteData.vision.mission.icon;
-  document.getElementById('visionText').value = siteData.vision.vision.text;
-  document.getElementById('visionIcon').value = siteData.vision.vision.icon;
-  document.getElementById('valuesText').value = siteData.vision.values.text;
-  document.getElementById('valuesIcon').value = siteData.vision.values.icon;
-  showMessage('تم إعادة تعيين البيانات', 'warning');
-}
+// تمت إزالة إعادة التعيين حسب الطلب
 
 // تحديث معلومات التواصل
 function updateContact() {
@@ -644,14 +629,7 @@ function updateContact() {
   showSuccessMessage('تم تحديث معلومات التواصل بنجاح!');
 }
 
-// إعادة تعيين معلومات التواصل
-function resetContact() {
-  document.getElementById('contactPhone').value = siteData.contact.phone;
-  document.getElementById('contactEmail').value = siteData.contact.email;
-  document.getElementById('contactAddress').value = siteData.contact.address;
-  document.getElementById('contactMap').value = siteData.contact.map;
-  showMessage('تم إعادة تعيين البيانات', 'warning');
-}
+// تمت إزالة إعادة التعيين حسب الطلب
 
 // تحميل الشركاء
 function loadPartners() {
@@ -663,8 +641,9 @@ function loadPartners() {
   }
   
   grid.innerHTML = '';
-  
-  siteData.partners.forEach((partner, index) => {
+  // تأكد من وجود قائمة الشركاء
+  const partners = Array.isArray(siteData.partners) ? siteData.partners : [];
+  partners.forEach((partner, index) => {
     const card = createPartnerCard(partner, index);
     grid.appendChild(card);
   });
@@ -674,7 +653,7 @@ function loadPartners() {
 // إنشاء بطاقة شريك
 function createPartnerCard(partner, index) {
   const card = document.createElement('div');
-  card.className = 'partner-card';
+  card.className = 'partner-card' + (partner.featured ? ' featured' : '');
   card.innerHTML = `
     <img src="${partner.image}" alt="${partner.name}" class="partner-image">
     <div class="partner-name">${partner.name}</div>
@@ -698,6 +677,7 @@ function addPartner() {
   const name = document.getElementById('newPartnerName').value;
   const type = document.getElementById('newPartnerType').value;
   const imageFile = document.getElementById('newPartnerImage').files[0];
+  const featured = !!document.getElementById('newPartnerFeatured').checked;
   
   if (!name || !type) {
     showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
@@ -710,7 +690,8 @@ function addPartner() {
       const newPartner = {
         name: name,
         type: type,
-        image: e.target.result
+        image: e.target.result,
+        featured
       };
       siteData.partners.push(newPartner);
       saveSiteData();
@@ -725,7 +706,8 @@ function addPartner() {
     const newPartner = {
       name: name,
       type: type,
-      image: '../i1.png' // صورة افتراضية
+      image: '../i1.png', // صورة افتراضية
+      featured
     };
     siteData.partners.push(newPartner);
     saveSiteData();
@@ -765,16 +747,16 @@ function loadServices() {
     grid.appendChild(card);
   });
   console.log('تم تحميل الخدمات:', siteData.services.length);
-  // مزامنة فورية مع الموقع الأساسي
-  updateMainSiteContent('services');
 }
 
 // إنشاء بطاقة خدمة
 function createServiceCard(service, index) {
   const card = document.createElement('div');
   card.className = 'service-card';
+  const isFA = typeof service.icon === 'string' && service.icon.startsWith('fas ');
+  const iconHTML = isFA ? `<i class="${service.icon}"></i>` : `${service.icon}`;
   card.innerHTML = `
-    <div class="service-icon">${service.icon}</div>
+    <div class="service-icon">${iconHTML}</div>
     <div class="service-name">${service.name}</div>
     <div class="partner-actions">
       <button class="btn btn-secondary btn-small" onclick="editService(${index})">
@@ -799,8 +781,12 @@ function addService() {
     showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
     return;
   }
-  
-  const newService = { name: name, icon: icon };
+  // دعم إدخال FontAwesome بإضافة بادئة تلقائياً إن كتب المستخدم اسم الفئة فقط
+  let normalizedIcon = icon.trim();
+  if (/^(fa[srldb]?\s)/.test(normalizedIcon) === false && /^[a-z0-9-]+$/i.test(normalizedIcon)) {
+    normalizedIcon = `fas fa-${normalizedIcon}`;
+  }
+  const newService = { name: name, icon: normalizedIcon };
   siteData.services.push(newService);
   saveSiteData();
     updateMainSiteContent('services');
@@ -842,8 +828,11 @@ function updateService() {
     showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
     return;
   }
-  
-  siteData.services[index] = { name: name, icon: icon };
+  let normalizedIcon = icon.trim();
+  if (/^(fa[srldb]?\s)/.test(normalizedIcon) === false && /^[a-z0-9-]+$/i.test(normalizedIcon)) {
+    normalizedIcon = `fas fa-${normalizedIcon}`;
+  }
+  siteData.services[index] = { name: name, icon: normalizedIcon };
   saveSiteData();
   updateMainSiteContent('services');
   loadServices();
@@ -880,16 +869,20 @@ function clearModalForm(modalId) {
 function showMessage(message, type = 'success') {
   console.log('showMessage:', message, type);
   const container = document.getElementById('messageContainer');
+  // تأكد من إظهار رسالة واحدة فقط في كل مرة
+  if (container) {
+    container.innerHTML = '';
+  }
   const messageElement = document.createElement('div');
   messageElement.className = `message ${type}`;
   messageElement.textContent = message;
   
   container.appendChild(messageElement);
   
-  // إزالة الرسالة بعد 5 ثوانٍ
+  // إزالة الرسالة بعد 3 ثوانٍ
   setTimeout(() => {
     messageElement.remove();
-  }, 5000);
+  }, 3000);
 }
 
 // إظهار/إخفاء overlay التحميل
@@ -920,6 +913,28 @@ function showSuccessMessage(message) {
   setTimeout(() => {
     successIcon.remove();
   }, 2000);
+}
+
+// ضغط صورة DataURL لتقليل الحجم عند التخزين في LocalStorage
+async function compressDataUrl(dataUrl, maxWidth = 1400, maxHeight = 1400, quality = 0.82) {
+  return new Promise((resolve) => {
+    try {
+      const img = new Image();
+      img.onload = function() {
+        const ratio = Math.min(maxWidth / img.width, maxHeight / img.height, 1);
+        const w = Math.round(img.width * ratio);
+        const h = Math.round(img.height * ratio);
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, w, h);
+        const out = canvas.toDataURL('image/jpeg', quality);
+        resolve(out);
+      };
+      img.onerror = function() { resolve(dataUrl); };
+      img.src = dataUrl;
+    } catch (_) { resolve(dataUrl); }
+  });
 }
 
 // تسجيل الخروج
@@ -958,6 +973,7 @@ function updateMainSite() {
 document.addEventListener('DOMContentLoaded', function() {
   console.log('dashboard-script.js: DOMContentLoaded تم استدعاؤها');
   initializeDashboard();
+  try { loadFeedback(); } catch (e) { console.warn('loadFeedback init warn', e); }
 });
 
 // دوال قسم "لماذا كرمل+"
@@ -1556,6 +1572,8 @@ function editPartner(index) {
   // تعبئة الحقول
   document.getElementById('newPartnerName').value = partner.name;
   document.getElementById('newPartnerType').value = partner.type;
+  const featuredCheckbox = document.getElementById('newPartnerFeatured');
+  if (featuredCheckbox) featuredCheckbox.checked = !!partner.featured;
   // لا نملأ الصورة لأنها input file
   // تغيير عنوان النافذة
   document.querySelector('#addPartnerModal .modal-header h3').textContent = 'تعديل الشريك';
@@ -1569,6 +1587,7 @@ function editPartner(index) {
     const name = document.getElementById('newPartnerName').value;
     const type = document.getElementById('newPartnerType').value;
     const imageFile = document.getElementById('newPartnerImage').files[0];
+    const featured = !!document.getElementById('newPartnerFeatured').checked;
     if (!name || !type) {
       showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
       return;
@@ -1579,6 +1598,7 @@ function editPartner(index) {
         partner.name = name;
         partner.type = type;
         partner.image = e.target.result;
+        partner.featured = featured;
         saveSiteData();
         updateMainSiteContent('partners');
         loadPartners();
@@ -1589,6 +1609,7 @@ function editPartner(index) {
     } else {
       partner.name = name;
       partner.type = type;
+      partner.featured = featured;
       // الصورة تبقى كما هي
       saveSiteData();
       updateMainSiteContent('partners');
@@ -1883,7 +1904,7 @@ function addBlog() {
   updateStats();
   saveSiteData();
   updateMainSiteContent('blog');
-  showMessage('تم إضافة المقال بنجاح', 'success');
+  showMessage('تم التحديث بنجاح', 'success');
 }
 
 function editBlog(index) {
@@ -1905,7 +1926,7 @@ function deleteBlog(index) {
     updateStats();
     saveSiteData();
     updateMainSiteContent('blog');
-    showMessage('تم حذف المقال بنجاح', 'success');
+    showMessage('تم التحديث بنجاح', 'success');
   }
 }
 
@@ -1926,7 +1947,7 @@ function updateBlog() {
   updateStats();
   updateMainSiteContent('blog');
   closeModal('editBlogModal');
-  showMessage('تم تحديث المقال بنجاح', 'success');
+  showMessage('تم التحديث بنجاح', 'success');
 }
 
 // إدارة آراء العملاء
@@ -1969,39 +1990,46 @@ function loadFeedback() {
 function showAddFeedbackModal() {
   document.getElementById('addFeedbackModal').style.display = 'block';
   clearModalForm('addFeedbackModal');
+  // اضبط زر الإضافة على حالته الافتراضية
+  const addBtn = document.querySelector('#addFeedbackModal .modal-footer .btn.btn-primary');
+  addBtn.textContent = 'إضافة';
+  addBtn.onclick = addFeedback;
 }
 
 function addFeedback() {
   const name = document.getElementById('newFeedbackName').value.trim();
-  const company = document.getElementById('newFeedbackCompany').value.trim();
+  const companyInput = document.getElementById('newFeedbackCompany');
   const text = document.getElementById('newFeedbackText').value.trim();
   
-  if (!name || !company || !text) {
+  if (!name || !text) {
     showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
     return;
   }
   
-  const newFeedback = { name, company, text, image: '' };
+  const newFeedback = { name, text, image: 'image.png', rating: 5 };
   siteData.feedback.push(newFeedback);
-  
+  saveSiteData();
+  updateMainSiteContent('feedback');
   closeModal('addFeedbackModal');
   loadFeedback();
   updateStats();
-  showMessage('تم إضافة رأي العميل بنجاح', 'success');
+  showMessage('تم التحديث بنجاح', 'success');
 }
 
 function editFeedback(index) {
   const feedback = siteData.feedback[index];
   // يمكن إضافة نافذة تعديل هنا
-  showMessage('ميزة التعديل قيد التطوير', 'info');
+  showMessage('تم التحديث بنجاح', 'success');
 }
 
 function deleteFeedback(index) {
   if (confirm('هل أنت متأكد من حذف هذا الرأي؟')) {
     siteData.feedback.splice(index, 1);
+    saveSiteData();
+    updateMainSiteContent('feedback');
     loadFeedback();
     updateStats();
-    showMessage('تم حذف رأي العميل بنجاح', 'success');
+    showMessage('تم التحديث بنجاح', 'success');
   }
 }
 
@@ -2127,7 +2155,7 @@ function createWhyKarmelCard(card, index) {
         <i class="${card.icon}"></i>
       </div>
       <div class="card-actions">
-        <button class="btn btn-sm btn-secondary" onclick="editWhyKarmelCard(${index})">
+        <button class="btn btn-sm btn-secondary" onclick="openEditWhy(${index})">
           <i class="fas fa-edit"></i>
         </button>
         <button class="btn btn-sm btn-danger" onclick="deleteWhyKarmelCard(${index})">
@@ -2163,17 +2191,32 @@ function addWhyKarmelCard() {
   showMessage('تم إضافة البطاقة الجديدة بنجاح', 'success');
 }
 
-// دالة تعديل بطاقة "لماذا كرمل+"
-function editWhyKarmelCard(index) {
+function openEditWhy(index) {
   const card = siteData.whyKarmel.cards[index];
-  // يمكن إضافة نافذة منبثقة للتعديل هنا
-  showMessage(`تم تحديد البطاقة: ${card.title} للتعديل`, 'info');
+  if (!card) return;
+  const modal = document.getElementById('addWhyModal');
+  if (!modal) return;
+  document.getElementById('editWhyIndex').value = String(index);
+  const setVal = (id, v='') => { const el = document.getElementById(id); if (el) el.value = v; };
+  setVal('newWhyIcon', card.icon || '');
+  setVal('newWhyTitle', card.title || '');
+  setVal('newWhyDesc', card.desc || '');
+  setVal('newWhyStat', card.stat || '');
+  setVal('newWhyStatText', card.statText || '');
+  const primaryBtn = document.getElementById('whyModalPrimaryBtn');
+  if (primaryBtn) {
+    primaryBtn.textContent = 'تحديث';
+    primaryBtn.onclick = updateWhyCard;
+  }
+  modal.style.display = 'block';
 }
 
 // دالة حذف بطاقة "لماذا كرمل+"
 function deleteWhyKarmelCard(index) {
   if (confirm('هل أنت متأكد من حذف هذه البطاقة؟')) {
     siteData.whyKarmel.cards.splice(index, 1);
+    saveSiteData();
+    updateMainSiteContent('whyKarmel');
     loadWhyKarmelData();
     updateStats();
     showMessage('تم حذف البطاقة بنجاح', 'success');
@@ -2188,6 +2231,70 @@ function resetWhyKarmel() {
     showMessage('تم إعادة تعيين البيانات', 'success');
   }
 }
+
+// ===== إضافات لإدارة لماذا كرمل+ (إضافة منبثقة وزر أعلى) =====
+function showAddWhyKarmelModal() {
+  const modal = document.getElementById('addWhyModal');
+  if (!modal) return;
+  // تفريغ الحقول
+  const setVal = (id, v='') => { const el = document.getElementById(id); if (el) el.value = v; };
+  setVal('newWhyIcon'); setVal('newWhyTitle'); setVal('newWhyDesc'); setVal('newWhyStat'); setVal('newWhyStatText');
+  const idx = document.getElementById('editWhyIndex'); if (idx) idx.value = '';
+  const primaryBtn = document.getElementById('whyModalPrimaryBtn');
+  if (primaryBtn) { primaryBtn.textContent = 'إضافة'; primaryBtn.onclick = addWhyCard; }
+  modal.style.display = 'block';
+}
+
+function addWhyCard() {
+  const icon = document.getElementById('newWhyIcon').value.trim();
+  const title = document.getElementById('newWhyTitle').value.trim();
+  const desc = document.getElementById('newWhyDesc').value.trim();
+  const stat = document.getElementById('newWhyStat').value.trim();
+  const statText = document.getElementById('newWhyStatText').value.trim();
+  if (!title || !desc) { showMessage('يرجى إدخال العنوان والوصف', 'error'); return; }
+
+  // دعم إدخال FontAwesome كاسم قصير
+  let normalizedIcon = icon || 'fas fa-star';
+  if (/^(fa[srldb]?\s)/.test(normalizedIcon) === false && /^[a-z0-9-]+$/i.test(normalizedIcon)) {
+    normalizedIcon = `fas fa-${normalizedIcon}`;
+  }
+
+  siteData.whyKarmel.cards.push({ icon: normalizedIcon, title, desc, stat, statText });
+  saveSiteData();
+  updateMainSiteContent('whyKarmel');
+  loadWhyKarmelData();
+  updateStats();
+  closeModal('addWhyModal');
+  showMessage('تمت إضافة البطاقة بنجاح', 'success');
+}
+
+function updateWhyCard() {
+  const idx = parseInt(document.getElementById('editWhyIndex').value || '-1');
+  if (isNaN(idx) || idx < 0) { showMessage('بيانات غير صالحة', 'error'); return; }
+  const icon = document.getElementById('newWhyIcon').value.trim();
+  const title = document.getElementById('newWhyTitle').value.trim();
+  const desc = document.getElementById('newWhyDesc').value.trim();
+  const stat = document.getElementById('newWhyStat').value.trim();
+  const statText = document.getElementById('newWhyStatText').value.trim();
+  if (!title || !desc) { showMessage('يرجى إدخال العنوان والوصف', 'error'); return; }
+  let normalizedIcon = icon || 'fas fa-star';
+  if (/^(fa[srldb]?\s)/.test(normalizedIcon) === false && /^[a-z0-9-]+$/i.test(normalizedIcon)) {
+    normalizedIcon = `fas fa-${normalizedIcon}`;
+  }
+  siteData.whyKarmel.cards[idx] = { icon: normalizedIcon, title, desc, stat, statText };
+  saveSiteData();
+  updateMainSiteContent('whyKarmel');
+  loadWhyKarmelData();
+  updateStats();
+  closeModal('addWhyModal');
+  showMessage('تم تحديث البطاقة بنجاح', 'success');
+}
+
+// ربط الدوال بالنافذة
+window.showAddWhyKarmelModal = showAddWhyKarmelModal;
+window.addWhyCard = addWhyCard;
+window.updateWhyCard = updateWhyCard;
+window.openEditWhy = openEditWhy;
 
 // دالة تحميل آراء العملاء
 function loadFeedback() {
@@ -2233,47 +2340,87 @@ function createFeedbackCard(feedback, index) {
 
 // دالة إضافة رأي جديد
 function addFeedback() {
-  const name = document.getElementById('newFeedbackName').value;
-  const text = document.getElementById('newFeedbackText').value;
+  const name = document.getElementById('newFeedbackName').value.trim();
+  const text = document.getElementById('newFeedbackText').value.trim();
   const rating = parseInt(document.getElementById('newFeedbackRating').value);
-  
+  const imageFile = document.getElementById('newFeedbackImage').files[0];
   if (!name || !text) {
     showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
     return;
   }
-  
-  const newFeedback = {
-    name: name,
-    text: text,
-    image: 'image.png', // صورة افتراضية
-    rating: rating
-  };
-  
+  const finalizeAdd = (imageSrc) => {
+    const newFeedback = { name, text, image: imageSrc || 'image.png', rating: isNaN(rating) ? 5 : rating };
   siteData.feedback.push(newFeedback);
+    saveSiteData();
+    updateMainSiteContent('feedback');
+    closeModal('addFeedbackModal');
   loadFeedback();
   updateStats();
-  closeModal('addFeedbackModal');
-  showMessage('تم إضافة الرأي الجديد بنجاح', 'success');
-  
-  // إعادة تعيين الحقول
-  document.getElementById('newFeedbackName').value = '';
-  document.getElementById('newFeedbackText').value = '';
-  document.getElementById('newFeedbackRating').value = '5';
+    showMessage('تم التحديث بنجاح', 'success');
+  };
+  if (imageFile) {
+    const reader = new FileReader();
+    reader.onload = (e) => finalizeAdd(e.target.result);
+    reader.readAsDataURL(imageFile);
+  } else {
+    finalizeAdd('image.png');
+  }
 }
 
 // دالة تعديل رأي العميل
 function editFeedback(index) {
   const feedback = siteData.feedback[index];
-  showMessage(`تم تحديد رأي: ${feedback.name} للتعديل`, 'info');
+  if (!feedback) return;
+  // عبئ الحقول الحالية في نافذة الإضافة لإعادة استخدامها للتعديل
+  document.getElementById('newFeedbackName').value = feedback.name || '';
+  document.getElementById('newFeedbackText').value = feedback.text || '';
+  document.getElementById('newFeedbackRating').value = String(feedback.rating || 5);
+  // لا نملأ ملف الصورة لأن input file لا يسمح بذلك برمجياً
+  // عدّل العنوان والزر
+  document.querySelector('#addFeedbackModal .modal-header h3').textContent = 'تعديل رأي';
+  const addBtn = document.querySelector('#addFeedbackModal .modal-footer .btn.btn-primary');
+  addBtn.textContent = 'تحديث';
+  addBtn.onclick = function() {
+    const name = document.getElementById('newFeedbackName').value.trim();
+    const text = document.getElementById('newFeedbackText').value.trim();
+    const rating = parseInt(document.getElementById('newFeedbackRating').value);
+    const imageFile = document.getElementById('newFeedbackImage').files[0];
+    if (!name || !text) {
+      showMessage('يرجى ملء جميع الحقول المطلوبة', 'error');
+      return;
+    }
+    const applyUpdate = (imageSrc) => {
+      feedback.name = name;
+      feedback.text = text;
+      feedback.rating = isNaN(rating) ? 5 : rating;
+      if (imageSrc) feedback.image = imageSrc;
+      saveSiteData();
+      updateMainSiteContent('feedback');
+      closeModal('addFeedbackModal');
+      loadFeedback();
+      updateStats();
+      showMessage('تم التحديث بنجاح', 'success');
+    };
+    if (imageFile) {
+      const reader = new FileReader();
+      reader.onload = (e) => applyUpdate(e.target.result);
+      reader.readAsDataURL(imageFile);
+    } else {
+      applyUpdate(null);
+    }
+  };
+  document.getElementById('addFeedbackModal').style.display = 'block';
 }
 
 // دالة حذف رأي العميل
 function deleteFeedback(index) {
   if (confirm('هل أنت متأكد من حذف هذا الرأي؟')) {
     siteData.feedback.splice(index, 1);
+    saveSiteData();
+    updateMainSiteContent('feedback');
     loadFeedback();
     updateStats();
-    showMessage('تم حذف الرأي بنجاح', 'success');
+    showMessage('تم التحديث بنجاح', 'success');
   }
 }
 

@@ -546,8 +546,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // ===== Success Modal Functionality =====
     const successModal = document.getElementById('successModal');
-    const successClose = document.querySelector('.success-close');
-    const successCloseBtn = document.querySelector('.success-close-btn');
+    const successSimpleClose = document.getElementById('successSimpleClose');
     
     // Show success modal
     function showSuccessModal() {
@@ -562,12 +561,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Success modal event listeners
-    if (successClose) {
-        successClose.addEventListener('click', closeSuccessModal);
-    }
-    
-    if (successCloseBtn) {
-        successCloseBtn.addEventListener('click', closeSuccessModal);
+    if (successSimpleClose) {
+        successSimpleClose.addEventListener('click', closeSuccessModal);
     }
     
     // Close success modal when clicking outside

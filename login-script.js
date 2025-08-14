@@ -16,23 +16,21 @@
       loginBtn.classList.add('loading');
       btnText.textContent = 'جاري التحقق من البيانات...';
       
-      // محاكاة التحقق من البيانات
+     
       setTimeout(() => {
-        // بيانات تسجيل الدخول الافتراضية
+    
         const validUsername = 'admin';
         const validPassword = 'karmel123';
         
         if (username === validUsername && password === validPassword) {
-          // عرض رسالة النجاح
+      
           successMessage.textContent = '✅ تم تسجيل الدخول بنجاح!';
           successMessage.style.display = 'block';
           
-          // تغيير حالة الزر
           loginBtn.classList.remove('loading');
           loginBtn.classList.add('success');
           btnText.textContent = 'تم تسجيل الدخول بنجاح!';
-          
-          // حفظ حالة تسجيل الدخول
+       
           sessionStorage.setItem('adminLoggedIn', 'true');
           sessionStorage.setItem('adminUsername', username);
           
@@ -41,16 +39,16 @@
             window.location.href = 'dashboard.html';
           }, 2000);
         } else {
-          // عرض رسالة الخطأ
+     
           errorMessage.textContent = '❌ اسم المستخدم أو كلمة المرور غير صحيحة';
           errorMessage.style.display = 'block';
           
-          // تغيير حالة الزر
+       
           loginBtn.classList.remove('loading');
           loginBtn.classList.add('error');
           btnText.textContent = 'فشل تسجيل الدخول';
           
-          // هز الحقول
+      
           document.getElementById('username').style.animation = 'shake 0.6s ease-in-out';
           document.getElementById('password').style.animation = 'shake 0.6s ease-in-out';
           
@@ -59,7 +57,6 @@
             document.getElementById('password').style.animation = '';
           }, 600);
           
-          // إعادة تعيين الزر بعد 3 ثوانٍ
           setTimeout(() => {
             loginBtn.classList.remove('error');
             btnText.textContent = 'دخول إلى لوحة التحكم';
@@ -68,7 +65,6 @@
       }, 2000);
     });
     
-    // التحقق من حالة تسجيل الدخول عند تحميل الصفحة
     window.addEventListener('load', function() {
       const isLoggedIn = sessionStorage.getItem('adminLoggedIn');
       if (isLoggedIn === 'true') {
